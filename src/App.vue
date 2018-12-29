@@ -1,29 +1,58 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <Canvas id="canvas"></Canvas>
+    <Macro id="macro"></Macro>
+    <Queue id="queue"></Queue>
+    <Scan></Scan>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import Canvas from './components/CanvasComponent.vue';
+import Macro from './components/MacroComponent.vue';
+import Queue from './components/QueueComponent.vue';
+import Scan from './components/ScanComponent.vue';
 
 @Component({
   components: {
-    HelloWorld,
+    Canvas,
+    Macro,
+    Queue,
+    Scan,
   },
 })
 export default class App extends Vue {}
 </script>
 
 <style>
+html, body { 
+  height: 100%;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  height: 100%;
+}
+
+#canvas {
+  width: 80%;
+  height: 70%;
+  display: inline-block;
+}
+
+#macro {
+  width: 20%;
+  height: 70%;
+  display: inline-block;
+}
+
+#queue {
+  width: 80%;
+  height: 30%;
+  display: inline-block;
 }
 </style>
