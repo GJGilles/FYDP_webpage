@@ -3,7 +3,7 @@
     <Canvas id="canvas"></Canvas>
     <Macro id="macro"></Macro>
     <Queue id="queue"></Queue>
-    <Scan></Scan>
+    <Scan id="scan"></Scan>
   </div>
 </template>
 
@@ -35,7 +35,11 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  height: 100%;
+  vertical-align: top;
+  height: 95%;
+  width: 90%;
+  margin: auto;
+  overflow: hidden;
 }
 
 #canvas {
@@ -47,12 +51,20 @@ html, body {
 #macro {
   width: 20%;
   height: 70%;
+  vertical-align: top;
   display: inline-block;
 }
 
 #queue {
   width: 80%;
   height: 30%;
+  display: inline-block;
+}
+
+#scan {
+  width: 20%;
+  height: 30%;
+  vertical-align: top;
   display: inline-block;
 }
 </style>

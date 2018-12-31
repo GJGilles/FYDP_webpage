@@ -1,11 +1,13 @@
 <template>
     <div>
-        <div id="palette-row">
-            <div class="static-obstacle"></div>
+        <div id="palette-row" class="d-flex flex-row justify-content-between">
+            <span class="p-2">
+                <button type="button" class="btn btn-dark">Static</button>
+            </span>
         </div>
         <div id="canvas-grid">
-            <div v-for="row in items" :key="row.id" class="row">
-                <div v-for="col in row.cols" :key="col.id" class="col">
+            <div v-for="row in items" :key="row.id" class="canvas-row">
+                <div v-for="col in row.cols" :key="col.id" class="canvas-col">
                     <div class="content"></div>
                 </div>
             </div>
@@ -59,18 +61,19 @@ export default class CanvasComponent extends Vue {
 #canvas-grid {
     overflow-x: scroll;
     width: 100%;
+    max-width: 1440px;
     height: 90%;
     padding-top: 5px;
 }
 
-#canvas-grid .row {
+#canvas-grid .canvas-row {
     height: 30px;
     white-space: nowrap;
     margin-top: -5px;
     display: inline-block;
 }
 
-#canvas-grid .col {
+#canvas-grid .canvas-col {
     display: inline-block;
     height: 100%;
     width: 30px;

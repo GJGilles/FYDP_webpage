@@ -1,11 +1,15 @@
 <template>
     <div>
-        <div id="queue-area">
-            <div v-for="row in queue" :key="row.id" class="row"></div>
-        </div>
+        <ul id="queue-area" class="list-group">
+            <li v-for="row in queue" :key="row.id" class="row list-group-item">{{ row.text }}</li>
+        </ul>
         <div id="button-area">
-            <button>Play</button>
-            <button>Pause</button>
+            <div class="d-flex flex-row justify-content-between">
+                <span class="p-2">
+                    <button v-if="!isPlaying" v-on:click="play" type="button" class="btn btn-success">Play</button>
+                    <button v-if="isPlaying" v-on:click="pause" type="button" class="btn btn-primary">Pause</button>
+                </span>
+            </div>
         </div>
     </div>
 </template>
@@ -18,9 +22,18 @@ import Component from 'vue-class-component';
 export default class QueueComponent extends Vue {
 
     private queue = [];
+    private isPlaying = true;
 
     constructor() {
         super();
+    }
+
+    private play() {
+        this.isPlaying = true;
+    }
+
+    private pause() {
+        this.isPlaying = false;
     }
 }
 </script>

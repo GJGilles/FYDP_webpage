@@ -1,5 +1,11 @@
 <template>
-    <div></div>
+    <div>
+        <div id="scan-buttons" class="d-flex flex-row justify-content-between">
+            <span class="p-2">
+                <button type="button" class="btn btn-info">Scan</button>
+            </span>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
