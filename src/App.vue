@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
-    <Canvas id="canvas"></Canvas>
-    <Macro id="macro"></Macro>
-    <Queue id="queue"></Queue>
-    <Scan id="scan"></Scan>
+  <div id="app" class="row">
+        <Canvas id="canvas" class="col-12 col-lg-10 order-1"></Canvas>
+        <Macro id="macro" class="col-10 col-lg-2 order-3 order-lg-2"></Macro>
+        <Queue id="queue" class="col-12 col-lg-10 order-2 order-lg-3"></Queue>
+        <Scan id="scan" class="col-2 order-4"></Scan>
   </div>
 </template>
 
@@ -36,10 +36,9 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   vertical-align: top;
-  height: 95%;
+  height: 100%;
   width: 90%;
   margin: auto;
-  overflow: hidden;
 }
 
 #canvas {
