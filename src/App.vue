@@ -9,6 +9,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import data,{ SIGNALS } from './services/websocket';
 import Canvas from './components/CanvasComponent.vue';
 import Macro from './components/MacroComponent.vue';
 import Queue from './components/QueueComponent.vue';
@@ -22,7 +23,15 @@ import Scan from './components/ScanComponent.vue';
     Scan,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  constructor() {
+    super();
+
+    data.register(SIGNALS.GET_QUEUE, (data) => { console.log(data); })
+    data.getQueue();
+    
+  }
+}
 </script>
 
 <style>
