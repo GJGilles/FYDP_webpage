@@ -8,7 +8,9 @@
         <div id="canvas-grid">
             <div v-for="row in items" :key="row.id" class="canvas-row">
                 <div v-for="col in row.cols" :key="col.id" class="canvas-col">
-                    <div class="content"></div>
+                    <div v-on:click="contentSelect(row.id, col.id)" v-bind:class="contentClass(row.id, col.id)">
+                        <span class="hovertext">{{ contentText(row.id, col.id) }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -18,6 +20,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import data from '../services/websocket';
 
 interface IRow {
     id: number;
@@ -35,9 +38,33 @@ export default class CanvasComponent extends Vue {
     private NUM_COLS = 48;
 
     private items: IRow[] = [];
+    private selected: { rowID: number, colID: number } = { rowID: -1, colID: -1 };
 
     constructor() {
         super();
+    }
+
+    public contentClass(rowID: number, colID: number) {
+        const classes = ['content'];
+        if (this.selected && this.selected.rowID === rowID && this.selected.colID === colID) {
+            classes.push('selected');
+        }
+        return classes.join(' ');
+    }
+
+    public contentSelect(rowID: number, colID: number) {
+        if (this.selected.rowID === rowID && this.selected.colID === colID) {
+            this.selected = { rowID: -1, colID: -1 };
+        } else if (this.selected.rowID !== -1 && this.selected.colID !== -1) {
+            data.addMove({ x: this.selected.colID, y: this.selected.rowID }, { x: colID, y: rowID });
+            this.selected = { rowID: -1, colID: -1 };
+        } else {
+            this.selected = { rowID, colID };
+        }
+    }
+
+    public contentText(rowID: number, colID: number) {
+        return `(${colID}, ${rowID})`;
     }
 
     private created() {
@@ -50,7 +77,6 @@ export default class CanvasComponent extends Vue {
             this.items.push(row);
         }
     }
-
 }
 </script>
 
@@ -79,5 +105,34 @@ export default class CanvasComponent extends Vue {
     width: 30px;
     border: 1px solid black;
 }
+
+#canvas-grid .content {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#canvas-grid .selected {
+    border: 2px solid limegreen;
+}
+
+#canvas-grid .hovertext {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 1px 5px;
+    border-radius: 6px;
+    position: absolute;
+    left: 15px;
+    top: -15px;
+    z-index: 1;
+}
+
+#canvas-grid .content:hover .hovertext {
+    visibility: visible;
+}
+
 </style>
 

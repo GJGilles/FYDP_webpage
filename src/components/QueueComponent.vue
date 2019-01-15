@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul id="queue-area" class="list-group">
-            <li v-for="row in queue" :key="row.id" class="row list-group-item">{{ row.text }}</li>
+            <li v-for="row in queue" :key="row.id" class="row list-group-item">{{ row }}</li>
         </ul>
         <div id="button-area">
             <div class="d-flex flex-row justify-content-between">
@@ -17,23 +17,36 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import data, { Task, SIGNALS, ENDPOINTS } from '../services/websocket';
 
 @Component({})
 export default class QueueComponent extends Vue {
 
-    private queue = [];
+    private queue: string[] = [];
     private isPlaying = true;
 
     constructor() {
         super();
+        data.register(ENDPOINTS.GET_QUEUE, this.updateQueue);
+        data.register(SIGNALS.UPDATED_QUEUE, this.updateQueue);
+        data.getQueue();
     }
 
     private play() {
         this.isPlaying = true;
+        data.playQueue();
     }
 
     private pause() {
         this.isPlaying = false;
+        data.pauseQueue();
+    }
+
+    private updateQueue(queue: Task[]) {
+        this.queue = [];
+        for (const task of queue) {
+            this.queue.unshift(`FROM (${task.start.x}, ${task.start.y}) TO (${task.end.x}, ${task.end.y})`);
+        }
     }
 }
 </script>

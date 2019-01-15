@@ -4,6 +4,16 @@ interface Message {
     body: any;
 }
 
+export interface Coord {
+    x: number;
+    y: number;
+}
+
+export interface Task {
+    start: Coord;
+    end: Coord;
+}
+
 export const ENDPOINTS = {
     CONNECT: 'connection',
     ADD_MOVE: 'add_move',
@@ -23,13 +33,6 @@ export const ENDPOINTS = {
 };
 
 export const SIGNALS = {
-    CONNECTED: 'connected',
-    ADDED_MOVE: 'added_move',
-
-    GET_COORDS: 'get_coords',
-    GET_QUEUE: 'get_queue',
-    GET_MACROS: 'get_macros',
-
     UPDATED_COORDS: 'updated_coords',
     UPDATED_QUEUE: 'updated_queue',
     UPDATED_QUEUE_STATE: 'updated_queue_state',
@@ -38,45 +41,24 @@ export const SIGNALS = {
     SCANNING_GRID: 'scanning_grid',
     SCANNED_GRID: 'scanned_grid',
 
-    ERROR: 'error' // General error signal, may add more specific errors later
-}
+    ERROR: 'error', // General error signal, may add more specific errors later
+};
 
 class DataService {
-
     private ws: WebSocket = new WebSocket('ws://localhost:8080'); // Server path
-    private resolve: () => void = () => { };
-    private connected: Promise<any> = new Promise((resolve) => { this.resolve = resolve; });
+    private connected: Promise<any> = Promise.resolve();
 
-    private callbacks: { [key: string]: ((...params: any[]) => void)[] } = {};
+    private callbacks: { [key: string]: Array<(...params: any[]) => void> } = {};
 
     constructor() {
-        this.ws.onopen = this.connect;
+        this.connected = new Promise((resolve) => {
+            this.ws.onopen = () => resolve();
+        });
         this.ws.onmessage = this.alert;
     }
 
-    private connect = () => {
-        this.resolve();
-    }
-
-    private alert = (msg: MessageEvent) => {
-        let data: Message = JSON.parse(msg.data);
-
-        console.log("Message Recieved: ", data.body);
-        if (this.callbacks[data.key]) {
-            for (let callback of this.callbacks[data.key]) {
-                callback(data.body);
-            }
-        }
-    }
-
-    private send = (key: string, data?: any) => {
-        this.connected.then(() => {
-            this.ws.send(JSON.stringify({ key: key, data: data }));
-        })
-    }
-
-    public addMove = () => {
-        return this.send(ENDPOINTS.ADD_MOVE);
+    public addMove = (start: Coord, end: Coord) => {
+        return this.send(ENDPOINTS.ADD_MOVE, { start, end });
     }
 
     public getCoords = () => {
@@ -96,7 +78,7 @@ class DataService {
     }
 
     public getQueue = () => {
-        return this.send(ENDPOINTS.GET_QUEUE, { stuff: ["cheese", "lettuce", "tomato", "pickle 0.5"] });
+        return this.send(ENDPOINTS.GET_QUEUE);
     }
 
     public scanGrid = () => {
@@ -127,6 +109,22 @@ class DataService {
         this.callbacks[key].push(callback);
     }
 
+    private alert = (msg: MessageEvent) => {
+        const data: Message = JSON.parse(msg.data);
+
+        console.info('Message Recieved: ', data.body);
+        if (this.callbacks[data.key]) {
+            for (const callback of this.callbacks[data.key]) {
+                callback(data.body);
+            }
+        }
+    }
+
+    private send = (key: string, body?: any) => {
+        this.connected.then(() => {
+            this.ws.send(JSON.stringify({ key, body }));
+        });
+    }
 }
 
 export default new DataService();
