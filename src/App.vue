@@ -10,7 +10,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import data, { SIGNALS } from './services/websocket';
 import Canvas from './components/CanvasComponent.vue';
 import Macro from './components/MacroComponent.vue';
 import Queue from './components/QueueComponent.vue';

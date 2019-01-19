@@ -1,15 +1,15 @@
 'use strict'
 
 const path = require('path');
-const { VueLoaderPlugin } = require('vue-loader');
-// const CopyWebpackPlugin = require('copy-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 
 module.exports = {
   mode: 'development',
-  entry: [
-    './src/main.ts'
-  ],
+  entry: ['./src/main.ts'],
   module: {
     rules: [
       {
@@ -17,13 +17,18 @@ module.exports = {
         use: 'vue-loader'
       },
       {
-          test: /\.tsx?$/,
-          use: 'ts-loader'
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        }
       },
       {
-          test: /\.css$/,
-          use: 'css-loader'
-      }
+        test: /\.css$/,
+        use: ['vue-style-loader', 'css-loader']
+      },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" }
     ]
   },
   resolve: {
@@ -31,17 +36,16 @@ module.exports = {
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
-    compress: true,
     port: 9000
   },
   plugins: [
     new VueLoaderPlugin(),
+    new CleanWebpackPlugin(['dist'], {}),
+    new CopyWebpackPlugin([{ from: 'public', to: 'public' }]),
     new HtmlWebpackPlugin({
-      filename: 'public/index.html'
+      template: 'src/index.html',
+      favicon: 'public/favicon.ico',
+      inject: true
     })
-    // new CopyWebpackPlugin([
-    //   { from: 'public/index.html', to: './' },
-    //   { from: 'public/favicon.ico', to: './' }
-    // ])
   ]
 }

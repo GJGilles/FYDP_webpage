@@ -6,8 +6,8 @@
         <div id="button-area">
             <div class="d-flex flex-row justify-content-between">
                 <span class="p-2">
-                    <button v-if="!isPlaying" v-on:click="play" type="button" class="btn btn-success">Play</button>
-                    <button v-if="isPlaying" v-on:click="pause" type="button" class="btn btn-primary">Pause</button>
+                    <button v-show="!isPlaying" v-on:click="play" type="button" class="btn btn-success"><i class="fas fa-play"></i></button>
+                    <button v-show="isPlaying" v-on:click="pause" type="button" class="btn btn-primary"><i class="fas fa-pause"></i></button>
                 </span>
             </div>
         </div>
