@@ -8,7 +8,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import Vue from 'vue';
+import Component from 'vue-class-component';
 import data, { SIGNALS } from './services/websocket';
 import Canvas from './components/CanvasComponent.vue';
 import Macro from './components/MacroComponent.vue';
