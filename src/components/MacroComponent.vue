@@ -2,13 +2,13 @@
     <div>
         <div id="macro-buttons" class="d-flex flex-row justify-content-between">
             <span class="p-2">
-                <button type="button" class="p-2 btn btn-success">Create</button>
+                <button v-on:click="create()" type="button" class="p-2 btn btn-success">Create</button>
             </span>
             <span class="p-2">
-                <button type="button" class="p-2 btn btn-primary">Edit</button>
+                <button v-on:click="save()" type="button" class="p-2 btn btn-info">Save</button>
             </span>
             <span class="p-2">
-                <button type="button" class="p-2 btn btn-danger">Delete</button>
+                <button v-on:click="exit()" type="button" class="p-2 btn btn-danger">Exit</button>
             </span>
         </div>
         <ul id="macro-list" class="list-group">
@@ -20,12 +20,25 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import macroedit from '../services/macroedit';
 
 @Component({})
 export default class MacroComponent extends Vue {
 
     constructor() {
         super();
+    }
+
+    private create() {
+        macroedit.edit({ name: 'New Macro', tasks: [], id: -1 });
+    }
+
+    private save() {
+        macroedit.save();
+    }
+
+    private exit() {
+        macroedit.exit();
     }
 }
 </script>

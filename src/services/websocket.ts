@@ -14,6 +14,12 @@ export interface Task {
     end: Coord;
 }
 
+export interface Macro {
+    id: number;
+    name: string;
+    tasks: Task[];
+}
+
 export const ENDPOINTS = {
     CONNECT: 'connection',
     ADD_MOVE: 'add_move',
@@ -90,12 +96,12 @@ class DataService {
         return this.send(ENDPOINTS.SCAN_GRID);
     }
 
-    public createMacro = () => {
-        return this.send(ENDPOINTS.CREATE_MACRO);
+    public createMacro = (name: string, tasks: Task[]) => {
+        return this.send(ENDPOINTS.CREATE_MACRO, { name, tasks });
     }
 
-    public updateMacro = () => {
-        return this.send(ENDPOINTS.UPDATE_MACRO);
+    public updateMacro = (macro: Macro) => {
+        return this.send(ENDPOINTS.UPDATE_MACRO, macro);
     }
 
     public removeMacro = () => {

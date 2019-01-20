@@ -21,7 +21,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import data from '../services/websocket';
+import data,{ Coord } from '../services/websocket';
+import macroedit from '../services/macroedit';
 
 interface IRow {
     id: number;
@@ -57,7 +58,7 @@ export default class CanvasComponent extends Vue {
         if (this.selected.rowID === rowID && this.selected.colID === colID) {
             this.selected = { rowID: -1, colID: -1 };
         } else if (this.selected.rowID !== -1 && this.selected.colID !== -1) {
-            data.addMove({ x: this.selected.colID, y: this.selected.rowID }, { x: colID, y: rowID });
+            this.addMove({ x: this.selected.colID, y: this.selected.rowID }, { x: colID, y: rowID });
             this.selected = { rowID: -1, colID: -1 };
         } else {
             this.selected = { rowID, colID };
@@ -76,6 +77,14 @@ export default class CanvasComponent extends Vue {
                 row.cols.push(col);
             }
             this.items.push(row);
+        }
+    }
+
+    private addMove(start: Coord, end: Coord) {
+        if (macroedit.isEditing()) {
+            macroedit.addTask({ start, end });
+        } else {
+            data.addMove(start, end);
         }
     }
 }

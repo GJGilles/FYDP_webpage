@@ -2,7 +2,7 @@
     <div class="row">
         <ul id="queue-area">
             <!-- Playing item -->
-            <li class="list-group-item task row">
+            <li v-show="!isEdit" class="list-group-item task row">
                 <button v-show="!isPlaying" v-on:click="play" type="button" class="btn btn-success col-2"><i class="fas fa-play"></i></button>
                 <button v-show="isPlaying" v-on:click="pause" type="button" class="btn btn-primary col-2"><i class="fas fa-pause"></i></button>
                 <span v-if="isQueue" class="col-9">{{ playing }}</span>
@@ -10,7 +10,17 @@
                 <button v-show="isQueue" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
             </li>
             <!-- Later Tasks -->
-            <li v-for="(row, index) in queue" :key="index" class="row list-group-item task row">
+            <li v-for="(row, index) in queue" :key="index" v-show="!isEdit" class="row list-group-item task row">
+                <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
+                <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
+                <span>{{ row }}</span>
+                <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
+            </li>
+
+            <li v-show="isEdit" class="list-group-item task row">
+                <span class="col-9">Currently Editing A Macro</span>
+            </li>
+            <li v-for="(row, index) in editQueue" :key="index" v-show="isEdit" class="row list-group-item task row">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
                 <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
                 <span>{{ row }}</span>
@@ -24,6 +34,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import data, { Task, SIGNALS, ENDPOINTS } from '../services/websocket';
+import macroedit from '../services/macroedit';
 
 @Component({})
 export default class QueueComponent extends Vue {
@@ -48,6 +59,14 @@ export default class QueueComponent extends Vue {
         return !!this.playing.length;
     }
 
+    private get isEdit() {
+        return macroedit.isEditing();
+    }
+
+    private get editQueue() {
+        return macroedit.getTasks();
+    }
+
     private play() {
         this.isPlaying = true;
         data.playQueue();
@@ -67,15 +86,27 @@ export default class QueueComponent extends Vue {
     }
 
     private moveUp(i: number) {
-        data.reorderQueue(i, i-1);
+        if (this.isEdit) {
+            macroedit.reorderTasks(i, i - 1);
+        } else {
+            data.reorderQueue(i, i - 1);
+        }
     }
 
     private moveDown(i: number) {
-        data.reorderQueue(i, i+1);
+        if (this.isEdit) {
+            macroedit.reorderTasks(i, i + 1);
+        } else {
+            data.reorderQueue(i, i + 1);
+        }
     }
 
     private remove(i: number) {
-        data.removeMove(i);
+        if (this.isEdit) {
+            macroedit.removeTask(i);
+        } else {
+            data.removeMove(i);
+        }
     }
 
     private updateQueue(queue: Task[]) {
