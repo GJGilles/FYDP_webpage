@@ -20,7 +20,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import macroedit from '../services/macroedit';
+import { edit, save, exit } from '../services/store';
 
 @Component({})
 export default class MacroComponent extends Vue {
@@ -30,15 +30,15 @@ export default class MacroComponent extends Vue {
     }
 
     private create() {
-        macroedit.edit({ name: 'New Macro', tasks: [], id: -1 });
+        edit({ name: 'New Macro', tasks: [], id: -1 });
     }
 
     private save() {
-        macroedit.save();
+        save();
     }
 
     private exit() {
-        macroedit.exit();
+        exit();
     }
 }
 </script>

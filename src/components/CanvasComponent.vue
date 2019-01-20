@@ -21,8 +21,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import data,{ Coord } from '../services/websocket';
-import macroedit from '../services/macroedit';
+import data, { Coord } from '../services/websocket';
+import { isEditing, addTask } from '../services/store';
 
 interface IRow {
     id: number;
@@ -35,7 +35,6 @@ interface ICol {
 
 @Component({})
 export default class CanvasComponent extends Vue {
-
     private NUM_ROWS = 27;
     private NUM_COLS = 48;
 
@@ -81,8 +80,8 @@ export default class CanvasComponent extends Vue {
     }
 
     private addMove(start: Coord, end: Coord) {
-        if (macroedit.isEditing()) {
-            macroedit.addTask({ start, end });
+        if (isEditing()) {
+            addTask({ start, end });
         } else {
             data.addMove(start, end);
         }

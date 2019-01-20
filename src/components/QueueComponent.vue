@@ -34,7 +34,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import data, { Task, SIGNALS, ENDPOINTS } from '../services/websocket';
-import macroedit from '../services/macroedit';
+import { isEditing, getTasks, reorderTasks, removeTask } from '../services/store';
 
 @Component({})
 export default class QueueComponent extends Vue {
@@ -60,11 +60,11 @@ export default class QueueComponent extends Vue {
     }
 
     private get isEdit() {
-        return macroedit.isEditing();
+        return isEditing();
     }
 
     private get editQueue() {
-        return macroedit.getTasks();
+        return getTasks();
     }
 
     private play() {
@@ -87,7 +87,7 @@ export default class QueueComponent extends Vue {
 
     private moveUp(i: number) {
         if (this.isEdit) {
-            macroedit.reorderTasks(i, i - 1);
+            reorderTasks(i, i - 1);
         } else {
             data.reorderQueue(i, i - 1);
         }
@@ -95,7 +95,7 @@ export default class QueueComponent extends Vue {
 
     private moveDown(i: number) {
         if (this.isEdit) {
-            macroedit.reorderTasks(i, i + 1);
+            reorderTasks(i, i + 1);
         } else {
             data.reorderQueue(i, i + 1);
         }
@@ -103,7 +103,7 @@ export default class QueueComponent extends Vue {
 
     private remove(i: number) {
         if (this.isEdit) {
-            macroedit.removeTask(i);
+            removeTask(i);
         } else {
             data.removeMove(i);
         }
