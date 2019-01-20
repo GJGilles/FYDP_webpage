@@ -17,6 +17,7 @@ export interface Task {
 export const ENDPOINTS = {
     CONNECT: 'connection',
     ADD_MOVE: 'add_move',
+    REMOVE_MOVE: 'remove_move',
     GET_COORDS: 'get_coords',
 
     PAUSE_QUEUE: 'pause_queue',
@@ -45,7 +46,7 @@ export const SIGNALS = {
 };
 
 class DataService {
-    private ws: WebSocket = new WebSocket('ws://45.62.218.142:8080'); // Server path
+    private ws: WebSocket = new WebSocket('ws://localhost:8080'); // Server path
     private connected: Promise<any> = Promise.resolve();
 
     private callbacks: { [key: string]: Array<(...params: any[]) => void> } = {};
@@ -61,6 +62,10 @@ class DataService {
         return this.send(ENDPOINTS.ADD_MOVE, { start, end });
     }
 
+    public removeMove = (index: number) => {
+        return this.send(ENDPOINTS.REMOVE_MOVE, index);
+    }
+
     public getCoords = () => {
         return this.send(ENDPOINTS.GET_COORDS);
     }
@@ -73,8 +78,8 @@ class DataService {
         return this.send(ENDPOINTS.PLAY_QUEUE);
     }
 
-    public reorderQueue = () => {
-        return this.send(ENDPOINTS.REORDER_QUEUE);
+    public reorderQueue = (start: number, stop: number) => {
+        return this.send(ENDPOINTS.REORDER_QUEUE, { start, stop });
     }
 
     public getQueue = () => {

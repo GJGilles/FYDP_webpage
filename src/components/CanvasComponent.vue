@@ -93,14 +93,14 @@ export default class CanvasComponent extends Vue {
 }
 
 #canvas-grid .canvas-row {
-    height: 22px;
+    height: 30px;
     white-space: nowrap;
 }
 
 #canvas-grid .canvas-col {
     display: inline-block;
     height: 100%;
-    width: 22px;
+    width: 30px;
     border: 1px solid black;
 }
 
