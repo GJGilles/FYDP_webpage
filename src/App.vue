@@ -32,6 +32,7 @@ export default class App extends Vue {
 </script>
 
 <style>
+
 html, body { 
   height: 100%;
 }
@@ -42,7 +43,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   vertical-align: top;
-  height: 100%;
+  height: 99%;
   width: 90%;
   margin: auto;
 }

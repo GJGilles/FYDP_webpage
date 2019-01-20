@@ -2,7 +2,7 @@
     <div>
         <div id="macro-buttons" class="d-flex flex-row justify-content-between">
             <span class="p-2">
-                <button type="button" class="btn btn-success">Create</button>
+                <button type="button" class="p-2 btn btn-success">Create</button>
             </span>
             <span class="p-2">
                 <button type="button" class="p-2 btn btn-primary">Edit</button>

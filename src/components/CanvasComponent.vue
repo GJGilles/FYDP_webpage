@@ -2,14 +2,15 @@
     <div>
         <div id="palette-row" class="d-flex flex-row justify-content-between">
             <span class="p-2">
-                <button type="button" class="btn btn-dark">Static</button>
+                <button type="button" class="p-2 btn btn-dark">Static</button>
             </span>
         </div>
         <div id="canvas-grid">
             <div v-for="row in items" :key="row.id" class="canvas-row">
                 <div v-for="col in row.cols" :key="col.id" class="canvas-col">
+                    <!-- TODO: Move so there is only one tooltip outside of the overflow container -->
                     <div v-on:click="contentSelect(row.id, col.id)" v-bind:class="contentClass(row.id, col.id)">
-                        <span class="hovertext">{{ contentText(row.id, col.id) }}</span>
+                        <!-- <span class="hovertext">{{ contentText(row.id, col.id) }}</span> -->
                     </div>
                 </div>
             </div>
@@ -34,7 +35,7 @@ interface ICol {
 @Component({})
 export default class CanvasComponent extends Vue {
 
-    private NUM_ROWS = 36;
+    private NUM_ROWS = 27;
     private NUM_COLS = 48;
 
     private items: IRow[] = [];
@@ -85,24 +86,21 @@ export default class CanvasComponent extends Vue {
     height: 10%;
 }
 #canvas-grid {
-    overflow-x: scroll;
+    overflow: auto;
     width: 100%;
     max-width: 1440px;
     height: 90%;
-    padding-top: 8px;
 }
 
 #canvas-grid .canvas-row {
-    height: 30px;
+    height: 22px;
     white-space: nowrap;
-    margin-top: -8px;
-    display: inline-block;
 }
 
 #canvas-grid .canvas-col {
     display: inline-block;
     height: 100%;
-    width: 30px;
+    width: 22px;
     border: 1px solid black;
 }
 
@@ -110,6 +108,7 @@ export default class CanvasComponent extends Vue {
     display: inline-block;
     height: 100%;
     width: 100%;
+    background-color: gray;
     position: relative;
 }
 
