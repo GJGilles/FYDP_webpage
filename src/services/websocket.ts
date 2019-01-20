@@ -104,8 +104,8 @@ class DataService {
         return this.send(ENDPOINTS.UPDATE_MACRO, macro);
     }
 
-    public removeMacro = () => {
-        return this.send(ENDPOINTS.REMOVE_MACRO);
+    public removeMacro = (id: number) => {
+        return this.send(ENDPOINTS.REMOVE_MACRO, id);
     }
 
     public getMacros = () => {

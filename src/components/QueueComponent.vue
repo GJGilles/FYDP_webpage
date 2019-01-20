@@ -5,25 +5,25 @@
             <li v-show="!isEdit" class="list-group-item task row">
                 <button v-show="!isPlaying" v-on:click="play" type="button" class="btn btn-success col-2"><i class="fas fa-play"></i></button>
                 <button v-show="isPlaying" v-on:click="pause" type="button" class="btn btn-primary col-2"><i class="fas fa-pause"></i></button>
-                <span v-if="isQueue" class="col-9">{{ playing }}</span>
+                <span v-if="isQueue" class="col-9">{{ getTaskName(playing) }}</span>
                 <span v-if="!isQueue" class="col-9">No tasks queued</span>
                 <button v-show="isQueue" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
             </li>
             <!-- Later Tasks -->
-            <li v-for="(row, index) in queue" :key="index" v-show="!isEdit" class="row list-group-item task row">
+            <li v-for="(row, index) in queue" :key="index" v-show="!isEdit" class="row list-group-item task">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
                 <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
-                <span>{{ row }}</span>
+                <span>{{ getTaskName(row) }}</span>
                 <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
             </li>
 
             <li v-show="isEdit" class="list-group-item task row">
                 <span class="col-9">Currently Editing A Macro</span>
             </li>
-            <li v-for="(row, index) in editQueue" :key="index" v-show="isEdit" class="row list-group-item task row">
+            <li v-for="(row, index) in editQueue" :key="index" v-show="isEdit" class="row list-group-item task">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
                 <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
-                <span>{{ row }}</span>
+                <span>{{ getTaskName(row) }}</span>
                 <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
             </li>
         </ul>
@@ -38,9 +38,9 @@ import { isEditing, getTasks, reorderTasks, removeTask } from '../services/store
 
 @Component({})
 export default class QueueComponent extends Vue {
-
-    private playing: string = '';
-    private queue: string[] = [];
+    private isQueue: boolean = false;
+    private playing: Task = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
+    private queue: Task[] = [];
     private isPlaying = true;
 
     constructor() {
@@ -53,10 +53,6 @@ export default class QueueComponent extends Vue {
             this.updateQueue(data.queue);
         });
         data.getQueue();
-    }
-
-    private get isQueue() {
-        return !!this.playing.length;
     }
 
     private get isEdit() {
@@ -109,18 +105,19 @@ export default class QueueComponent extends Vue {
         }
     }
 
+    private getTaskName = (task: Task) => {
+        return `FROM (${task.start.x}, ${task.start.y}) TO (${task.end.x}, ${task.end.y})`;
+    }
+
     private updateQueue(queue: Task[]) {
         const playing = queue.shift();
         if (playing) {
-            this.playing = `FROM (${playing.start.x}, ${playing.start.y}) TO (${playing.end.x}, ${playing.end.y})`;
+            this.playing = playing;
+            this.isQueue = true;
         } else {
-            this.playing = '';
+            this.isQueue = false;
         }
-        
-        this.queue = [];
-        for (const task of queue) {
-            this.queue.push(`FROM (${task.start.x}, ${task.start.y}) TO (${task.end.x}, ${task.end.y})`);
-        }
+        this.queue = queue;
     }
 
     private updateState(playing: boolean) {
