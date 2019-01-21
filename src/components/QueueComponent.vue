@@ -1,30 +1,35 @@
 <template>
     <div class="row">
-        <ul id="queue-area">
+        <ul v-show="!isEdit" class="queue-area">
             <!-- Playing item -->
-            <li v-show="!isEdit" class="list-group-item task row">
+            <li class="list-group-item task row">
                 <button v-show="!isPlaying" v-on:click="play" type="button" class="btn btn-success col-2"><i class="fas fa-play"></i></button>
                 <button v-show="isPlaying" v-on:click="pause" type="button" class="btn btn-primary col-2"><i class="fas fa-pause"></i></button>
-                <span v-if="isQueue" class="col-9">{{ getTaskName(playing) }}</span>
-                <span v-if="!isQueue" class="col-9">No tasks queued</span>
-                <button v-show="isQueue" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
+                <div v-if="isQueue" class="col-6 d-inline-block">{{ getTaskName(playing) }}</div>
+                <div v-if="!isQueue" class="col-6 d-inline-block">No tasks queued</div>
+                <button v-show="isQueue" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
             </li>
             <!-- Later Tasks -->
-            <li v-for="(row, index) in queue" :key="index" v-show="!isEdit" class="row list-group-item task">
+            <li v-for="(row, index) in queue" :key="index" class="row list-group-item task">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
                 <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
-                <span>{{ getTaskName(row) }}</span>
-                <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
+                <div class="col-6 d-inline-block">{{ getTaskName(row) }}</div>
+                <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
             </li>
-
-            <li v-show="isEdit" class="list-group-item task row">
-                <span class="col-9">Currently Editing A Macro</span>
+        </ul>
+        
+        <ul v-show="isEdit" class="queue-area">
+            <li class="list-group-item task row">
+                <button v-on:click="save()" type="button" class="btn btn-success col-1"><i class="fas fa-save"></i></button>
+                <button v-on:click="close()" type="button" class="btn btn-danger col-1"><i class="fas fa-times"></i></button>
+                <div class="col-2 d-inline-block">Currently Editing:</div>
+                <div class="col-4 d-inline-block"><input v-model="name" type="text" class="form-control"></div>
             </li>
-            <li v-for="(row, index) in editQueue" :key="index" v-show="isEdit" class="row list-group-item task">
+            <li v-for="(row, index) in editQueue" :key="index" class="row list-group-item task">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
                 <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
-                <span>{{ getTaskName(row) }}</span>
-                <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-times"></i></button>
+                <div class="col-6 d-inline-block">{{ getTaskName(row) }}</div>
+                <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
             </li>
         </ul>
     </div>
@@ -34,7 +39,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import data, { Task, SIGNALS, ENDPOINTS } from '../services/websocket';
-import { isEditing, getTasks, reorderTasks, removeTask } from '../services/store';
+import { isEditing, getTasks, reorderTasks, removeTask, save, exit, setName, getName } from '../services/store';
 
 @Component({})
 export default class QueueComponent extends Vue {
@@ -42,6 +47,8 @@ export default class QueueComponent extends Vue {
     private playing: Task = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
     private queue: Task[] = [];
     private isPlaying = true;
+
+    private name: string = 'New Macro';
 
     constructor() {
         super();
@@ -56,6 +63,7 @@ export default class QueueComponent extends Vue {
     }
 
     private get isEdit() {
+        this.name = getName();
         return isEditing();
     }
 
@@ -105,6 +113,15 @@ export default class QueueComponent extends Vue {
         }
     }
 
+    private save() {
+        setName(this.name);
+        save();
+    }
+
+    private close() {
+        exit();
+    }
+
     private getTaskName = (task: Task) => {
         return `FROM (${task.start.x}, ${task.start.y}) TO (${task.end.x}, ${task.end.y})`;
     }
@@ -128,7 +145,7 @@ export default class QueueComponent extends Vue {
 
 <style>
 
-#queue-area {
+.queue-area {
     padding-left: 0px;
     height: 100%;
     border: 1px solid black;
@@ -136,7 +153,7 @@ export default class QueueComponent extends Vue {
     overflow-y: auto;
 }
 
-#queue-area .task {
+.queue-area .task {
     border: 1px solid gray;
     color: white;
 }

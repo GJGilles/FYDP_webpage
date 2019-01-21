@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import data, { Coord } from '../services/websocket';
+import data, { Coord, SIGNALS, ENDPOINTS, Pawn } from '../services/websocket';
 import { isEditing, addTask } from '../services/store';
 
 interface IRow {
@@ -39,33 +39,40 @@ export default class CanvasComponent extends Vue {
     private NUM_COLS = 48;
 
     private items: IRow[] = [];
-    private selected: { rowID: number, colID: number } = { rowID: -1, colID: -1 };
+    private selected: Coord = { x: -1, y: -1 };
+    private head: Coord = { x: 0, y: 0 };
 
     constructor() {
         super();
+        data.register(SIGNALS.UPDATED_COORDS, this.updateCoords);
+        data.register(ENDPOINTS.GET_COORDS, this.updateCoords);
+        data.getCoords();
     }
 
-    public contentClass(rowID: number, colID: number) {
+    public contentClass(x: number, y: number) {
         const classes = ['content'];
-        if (this.selected && this.selected.rowID === rowID && this.selected.colID === colID) {
+        if (this.selected.x === x && this.selected.y === y) {
             classes.push('selected');
+        }
+        if (this.head.x === x && this.head.y === y) {
+            classes.push('head');
         }
         return classes.join(' ');
     }
 
-    public contentSelect(rowID: number, colID: number) {
-        if (this.selected.rowID === rowID && this.selected.colID === colID) {
-            this.selected = { rowID: -1, colID: -1 };
-        } else if (this.selected.rowID !== -1 && this.selected.colID !== -1) {
-            this.addMove({ x: this.selected.colID, y: this.selected.rowID }, { x: colID, y: rowID });
-            this.selected = { rowID: -1, colID: -1 };
+    public contentSelect(x: number, y: number) {
+        if (this.selected.x === x && this.selected.y === y) {
+            this.selected = { x: -1, y: -1 };
+        } else if (this.selected.x !== -1 && this.selected.y !== -1) {
+            this.addMove({ x: this.selected.y, y: this.selected.x }, { x: y, y: x });
+            this.selected = { x: -1, y: -1 };
         } else {
-            this.selected = { rowID, colID };
+            this.selected = { x, y };
         }
     }
 
-    public contentText(rowID: number, colID: number) {
-        return `(${colID}, ${rowID})`;
+    public contentText(x: number, y: number) {
+        return `(${y}, ${x})`;
     }
 
     private created() {
@@ -86,6 +93,11 @@ export default class CanvasComponent extends Vue {
             data.addMove(start, end);
         }
     }
+
+    private updateCoords(params: { head: Coord, pawns: Pawn[] }) {
+        this.head = params.head;
+    }
+
 }
 </script>
 
@@ -122,6 +134,10 @@ export default class CanvasComponent extends Vue {
 
 #canvas-grid .selected {
     border: 2px solid limegreen;
+}
+
+#canvas-grid .head {
+    background: tomato;
 }
 
 #canvas-grid .hovertext {

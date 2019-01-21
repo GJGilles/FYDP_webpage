@@ -1,22 +1,14 @@
 <template>
     <div>
-        <div id="macro-buttons" class="d-flex flex-row justify-content-between">
-            <span class="p-2">
-                <button v-on:click="create()" type="button" class="p-2 btn btn-success">Create</button>
-            </span>
-            <span class="p-2">
-                <button v-on:click="save()" type="button" class="p-2 btn btn-info">Save</button>
-            </span>
-            <span class="p-2">
-                <button v-on:click="exit()" type="button" class="p-2 btn btn-danger">Exit</button>
-            </span>
-        </div>
         <ul id="macro-list" class="list-group">
             <li v-for="(macro, index) in macros" :key="macro.id" class="list-group-item row">
                 <span class="col-6">{{ macro.name }}</span>
                 <button v-on:click="remove(macro.id)" type="button" class="btn btn-danger float-right col-2"><i class="fas fa-trash"></i></button>
                 <button v-on:click="edit(index)" type="button" class="btn btn-warning float-right col-2"><i class="fas fa-pencil-alt"></i></button>
-                <button v-on:click="run(index)" type="button" class="btn btn-success float-right col-2"><i class="fas fa-plus"></i></button>
+                <button v-on:click="run(index)" type="button" class="btn btn-success float-right col-2"><i class="fas fa-play"></i></button>
+            </li>
+            <li class="list-group-item row">
+                <button v-on:click="create()" type="button" class="btn btn-success float-right"><i class="fas fa-plus"></i></button>
             </li>
         </ul>
     </div>
@@ -26,7 +18,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import data, { SIGNALS, Macro, ENDPOINTS } from '../services/websocket';
-import { edit, save, exit, removeTask } from '../services/store';
+import { edit } from '../services/store';
 
 @Component({})
 export default class MacroComponent extends Vue {
@@ -41,14 +33,6 @@ export default class MacroComponent extends Vue {
 
     private create() {
         edit({ name: 'New Macro', tasks: [], id: -1 });
-    }
-
-    private save() {
-        save();
-    }
-
-    private exit() {
-        exit();
     }
 
     private remove(id: number) {
@@ -82,6 +66,10 @@ export default class MacroComponent extends Vue {
         width: calc(100% - 2px);
         color: white;
         overflow-x: hidden;
+    }
+
+    #macro-list li {
+        border: 1px solid gray;
     }
 </style>
 

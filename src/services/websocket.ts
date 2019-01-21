@@ -20,6 +20,16 @@ export interface Macro {
     tasks: Task[];
 }
 
+export interface Pawn {
+    position: Coord;
+
+    obstacle: boolean;
+    id: number;
+
+    name: string;
+    color: string;
+}
+
 export const ENDPOINTS = {
     CONNECT: 'connection',
     ADD_MOVE: 'add_move',
