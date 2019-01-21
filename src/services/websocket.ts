@@ -28,6 +28,7 @@ export interface Pawn {
 
     name: string;
     color: string;
+    shape: string;
 }
 
 export const ENDPOINTS = {
@@ -62,7 +63,7 @@ export const SIGNALS = {
 };
 
 class DataService {
-    private ws: WebSocket = new WebSocket('ws://localhost:8080'); // Server path
+    private ws: WebSocket = new WebSocket('ws://45.62.218.132:8080'); // Server path
     private connected: Promise<any> = Promise.resolve();
 
     private callbacks: { [key: string]: Array<(...params: any[]) => void> } = {};

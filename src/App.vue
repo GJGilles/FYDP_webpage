@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="row">
+  <div id="app" class="row"> 
         <Canvas id="canvas" class="col-12 col-lg-10 order-1"></Canvas>
         <Macro id="macro" class="col-10 col-lg-2 order-3 order-lg-2"></Macro>
         <Queue id="queue" class="col-12 col-lg-10 order-2 order-lg-3"></Queue>

@@ -123,7 +123,7 @@ export default class QueueComponent extends Vue {
     }
 
     private getTaskName = (task: Task) => {
-        return `FROM (${task.start.x}, ${task.start.y}) TO (${task.end.x}, ${task.end.y})`;
+        return `FROM (${task.start.x + 1}, ${task.start.y + 1}) TO (${task.end.x + 1}, ${task.end.y + 1})`;
     }
 
     private updateQueue(queue: Task[]) {

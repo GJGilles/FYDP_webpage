@@ -9,7 +9,8 @@
             <div v-for="row in items" :key="row.id" class="canvas-row">
                 <div v-for="col in row.cols" :key="col.id" class="canvas-col">
                     <!-- TODO: Move so there is only one tooltip outside of the overflow container -->
-                    <div v-on:click="contentSelect(row.id, col.id)" v-bind:class="contentClass(row.id, col.id)">
+                    <div v-on:click="contentSelect(col.id, row.id)" v-bind:class="contentClass(col.id, row.id)">
+                        <div v-if="isPawn(col.id, row.id)"  v-bind:style="pawnColor(col.id, row.id)"><font-awesome-icon v-bind:icon="pawnShape(col.id, row.id)"/></div>
                         <!-- <span class="hovertext">{{ contentText(row.id, col.id) }}</span> -->
                     </div>
                 </div>
@@ -41,12 +42,17 @@ export default class CanvasComponent extends Vue {
     private items: IRow[] = [];
     private selected: Coord = { x: -1, y: -1 };
     private head: Coord = { x: 0, y: 0 };
+    private pawns: { [coord: string]: Pawn } = {};
 
     constructor() {
         super();
         data.register(SIGNALS.UPDATED_COORDS, this.updateCoords);
         data.register(ENDPOINTS.GET_COORDS, this.updateCoords);
         data.getCoords();
+    }
+
+    private getCoordKey = (coord: Coord) => {
+        return `(${coord.x},${coord.y})`;
     }
 
     public contentClass(x: number, y: number) {
@@ -64,16 +70,16 @@ export default class CanvasComponent extends Vue {
         if (this.selected.x === x && this.selected.y === y) {
             this.selected = { x: -1, y: -1 };
         } else if (this.selected.x !== -1 && this.selected.y !== -1) {
-            this.addMove({ x: this.selected.y, y: this.selected.x }, { x: y, y: x });
+            this.addMove({ x: this.selected.x, y: this.selected.y }, { x, y });
             this.selected = { x: -1, y: -1 };
         } else {
             this.selected = { x, y };
         }
     }
 
-    public contentText(x: number, y: number) {
-        return `(${y}, ${x})`;
-    }
+    // public contentText(x: number, y: number) {
+    //     return `(${y}, ${x})`;
+    // }
 
     private created() {
         for (let i = 0; i < this.NUM_ROWS; i++) {
@@ -94,8 +100,28 @@ export default class CanvasComponent extends Vue {
         }
     }
 
+    private isPawn(x: number, y: number) {
+        return !!this.pawns[this.getCoordKey({ x, y })];
+    }
+
+    private pawnColor(x: number, y: number) {
+        if (this.isPawn(x, y)) {
+            return 'color: ' + this.pawns[this.getCoordKey({ x, y })].color;
+        }
+    }
+
+    private pawnShape(x: number, y: number) {
+        if (this.isPawn(x, y)) {
+            return ['fas', this.pawns[this.getCoordKey({ x, y })].shape];
+        }
+    }
+
     private updateCoords(params: { head: Coord, pawns: Pawn[] }) {
         this.head = params.head;
+        this.pawns = {};
+        for (const pawn of params.pawns) {
+            this.pawns[this.getCoordKey(pawn.position)] = pawn;
+        }
     }
 
 }
@@ -130,6 +156,17 @@ export default class CanvasComponent extends Vue {
     width: 100%;
     background-color: gray;
     position: relative;
+    vertical-align: top;
+    text-align: center;
+}
+
+#canvas-grid .content div {
+    background: white;
+    display: inline-block;
+    vertical-align: middle;
+    height: 22px;
+    width: 22px;
+    border-radius: 10px;
 }
 
 #canvas-grid .selected {
