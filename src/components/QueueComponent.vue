@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div>
         <ul v-show="!isEdit" class="queue-area">
             <!-- Playing item -->
             <li class="list-group-item task row">
@@ -22,8 +22,8 @@
             <li class="list-group-item task row">
                 <button v-on:click="save()" type="button" class="btn btn-success col-1"><i class="fas fa-save"></i></button>
                 <button v-on:click="close()" type="button" class="btn btn-danger col-1"><i class="fas fa-times"></i></button>
-                <div class="col-2 d-inline-block">Currently Editing:</div>
                 <div class="col-4 d-inline-block"><input v-model="name" type="text" class="form-control"></div>
+                <div class="col-4 d-inline-block float-right">Macro Edit Mode</div>
             </li>
             <li v-for="(row, index) in editQueue" :key="index" class="row list-group-item task">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
@@ -86,7 +86,11 @@ export default class QueueComponent extends Vue {
     }
 
     private isLast(i: number) {
-        return i === this.queue.length - 1;
+        if (this.isEdit) {
+            return i === this.editQueue.length - 1;
+        } else {
+            return i === this.queue.length - 1;
+        }
     }
 
     private moveUp(i: number) {

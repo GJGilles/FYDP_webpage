@@ -28,21 +28,22 @@ export interface Pawn {
 
     name: string;
     color: string;
-    shape: string;
+    shape: string[];
 }
 
 export const ENDPOINTS = {
     CONNECT: 'connection',
     ADD_MOVE: 'add_move',
     REMOVE_MOVE: 'remove_move',
-    GET_COORDS: 'get_coords',
 
     PAUSE_QUEUE: 'pause_queue',
     PLAY_QUEUE: 'play_queue',
     REORDER_QUEUE: 'reorder_queue',
     GET_QUEUE: 'get_queue',
 
+    GET_COORDS: 'get_coords',
     SCAN_GRID: 'scan_grid',
+    UPDATE_PAWN: 'update_pawn',
 
     CREATE_MACRO: 'create_macro',
     UPDATE_MACRO: 'update_macro',
@@ -83,10 +84,6 @@ class DataService {
         return this.send(ENDPOINTS.REMOVE_MOVE, index);
     }
 
-    public getCoords = () => {
-        return this.send(ENDPOINTS.GET_COORDS);
-    }
-
     public pauseQueue = () => {
         return this.send(ENDPOINTS.PAUSE_QUEUE);
     }
@@ -103,8 +100,16 @@ class DataService {
         return this.send(ENDPOINTS.GET_QUEUE);
     }
 
+    public getCoords = () => {
+        return this.send(ENDPOINTS.GET_COORDS);
+    }
+
     public scanGrid = () => {
         return this.send(ENDPOINTS.SCAN_GRID);
+    }
+
+    public updatePawn = (id: number, name: string, color: string, shape: string[]) => {
+        return this.send(ENDPOINTS.UPDATE_PAWN, { id, name, color, shape });
     }
 
     public createMacro = (name: string, tasks: Task[]) => {
