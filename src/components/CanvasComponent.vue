@@ -13,9 +13,9 @@
         </div>
         <div class="col-2">
             <div id="palette-row" class="row">
-                <button type="button" class="btn btn-dark col-4">Static</button>
+                <button v-on:click="add()" type="button" class="btn btn-dark col-4">Static</button>
                 <div class="d-inline-block col-4"></div>
-                <button type="button" class="btn btn-info col-4">Scan</button>
+                <button v-on:click="scan()" type="button" class="btn btn-info col-4">Scan</button>
             </div>
             <div id="position-row" class="row">
                 <div class="col-8">Selected Space:</div>
@@ -24,7 +24,7 @@
                 <div class="col-4">{{ hoverText() }}</div>
             </div>
             <ul id="canvas-sidebar" v-show="!isEditing()" class="list-group">
-                <li v-for="pawn in pawns" :key="pawn.id" class="list-group-item row">
+                <li v-on:click="pawnSelect(pawn)" v-for="pawn in pawns" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="list-group-item row">
                     <div class="d-inline-block col-9">{{ pawn.name }}</div>
                     <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-3"><i class="fas fa-pencil-alt"></i></button>
                 </li>
@@ -72,7 +72,10 @@ export default class CanvasComponent extends Vue {
     private selected: Coord = { x: -1, y: -1 };
     private hover: Coord = { x: -1, y: -1 };
     private head: Coord = { x: 0, y: 0 };
+
     private pawns: { [coord: string]: Pawn } = {};
+    private pawn: string = '';
+    private adding: boolean = false;
 
     private editing: string = '';
     private name: string = '';
@@ -98,7 +101,19 @@ export default class CanvasComponent extends Vue {
         if (this.head.x === x && this.head.y === y) {
             classes.push('head');
         }
+        if (this.isPawn(x, y) && this.pawns[this.getCoordKey({ x, y })].obstacle) {
+            classes.push('obstacle');
+        }
+
         return classes.join(' ');
+    }
+
+    public pawnClass(pawn: Pawn) {
+        if (this.pawn === this.getCoordKey(pawn.position)) {
+            return 'active';
+        } else {
+            return '';
+        }
     }
 
     public iconClass(icon: string[]) {
@@ -114,7 +129,10 @@ export default class CanvasComponent extends Vue {
     }
 
     public contentSelect(x: number, y: number) {
-        if (this.selected.x === x && this.selected.y === y) {
+        if (this.adding && !this.isPawn(x, y)) {
+            this.adding = false;
+            data.addPawn({ x, y });
+        } else if (this.selected.x === x && this.selected.y === y) {
             this.selected = { x: -1, y: -1 };
         } else if (this.selected.x !== -1 && this.selected.y !== -1) {
             this.addMove({ x: this.selected.x, y: this.selected.y }, { x, y });
@@ -159,6 +177,10 @@ export default class CanvasComponent extends Vue {
         }
     }
 
+    private pawnSelect(pawn: Pawn) {
+        this.pawn = this.getCoordKey(pawn.position);
+    }
+
     private addMove(start: Coord, end: Coord) {
         if (isEditing()) {
             addTask({ start, end });
@@ -189,6 +211,14 @@ export default class CanvasComponent extends Vue {
         for (const pawn of params.pawns) {
             this.pawns[this.getCoordKey(pawn.position)] = pawn;
         }
+    }
+
+    private add() {
+        this.adding = true;
+    }
+
+    private scan() {
+        data.scanGrid();
     }
 
     private edit(pawn: Pawn) {
@@ -290,6 +320,10 @@ export default class CanvasComponent extends Vue {
     height: 22px;
     width: 22px;
     border-radius: 10px;
+}
+
+#canvas-grid .obstacle div {
+    background: black;
 }
 
 #canvas-grid .selected {

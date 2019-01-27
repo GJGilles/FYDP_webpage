@@ -3,11 +3,11 @@
         <ul v-show="!isEdit" class="queue-area">
             <!-- Playing item -->
             <li class="list-group-item task row">
-                <button v-show="!isPlaying" v-on:click="play" type="button" class="btn btn-success col-2"><i class="fas fa-play"></i></button>
-                <button v-show="isPlaying" v-on:click="pause" type="button" class="btn btn-primary col-2"><i class="fas fa-pause"></i></button>
+                <button v-show="!isPlaying" v-on:click="play()" type="button" class="btn btn-success col-2"><i class="fas fa-play"></i></button>
+                <button v-show="isPlaying" v-on:click="pause()" type="button" class="btn btn-primary col-2"><i class="fas fa-pause"></i></button>
                 <div v-if="isQueue" class="col-6 d-inline-block">{{ getTaskName(playing) }}</div>
                 <div v-if="!isQueue" class="col-6 d-inline-block">No tasks queued</div>
-                <button v-show="isQueue" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
+                <button v-on:click="remove(-1)" v-show="isQueue" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
             </li>
             <!-- Later Tasks -->
             <li v-for="(row, index) in queue" :key="index" class="row list-group-item task">

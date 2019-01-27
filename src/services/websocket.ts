@@ -43,6 +43,7 @@ export const ENDPOINTS = {
 
     GET_COORDS: 'get_coords',
     SCAN_GRID: 'scan_grid',
+    ADD_PAWN: 'add_pawn',
     UPDATE_PAWN: 'update_pawn',
 
     CREATE_MACRO: 'create_macro',
@@ -64,7 +65,7 @@ export const SIGNALS = {
 };
 
 class DataService {
-    private ws: WebSocket = new WebSocket('ws://45.62.218.132:8080'); // Server path
+    private ws: WebSocket = new WebSocket('ws://localhost:8080'); // Server path
     private connected: Promise<any> = Promise.resolve();
 
     private callbacks: { [key: string]: Array<(...params: any[]) => void> } = {};
@@ -108,6 +109,10 @@ class DataService {
         return this.send(ENDPOINTS.SCAN_GRID);
     }
 
+    public addPawn = (position: Coord) => {
+        return this.send(ENDPOINTS.ADD_PAWN, position);
+    }
+
     public updatePawn = (id: number, name: string, color: string, shape: string[]) => {
         return this.send(ENDPOINTS.UPDATE_PAWN, { id, name, color, shape });
     }
@@ -139,7 +144,7 @@ class DataService {
     private alert = (msg: MessageEvent) => {
         const data: Message = JSON.parse(msg.data);
 
-        console.info('Message Recieved: ', data.body);
+        console.info('Message Recieved: ', data.key, data.body);
         if (this.callbacks[data.key]) {
             for (const callback of this.callbacks[data.key]) {
                 callback(data.body);
@@ -150,6 +155,7 @@ class DataService {
     private send = (key: string, body?: any) => {
         this.connected.then(() => {
             this.ws.send(JSON.stringify({ key, body }));
+            console.info('Message Sent: ', key, body);
         });
     }
 }
