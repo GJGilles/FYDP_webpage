@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id="canvas-grid" v-on:mouseleave="contentHover(-1, -1)" class="col-10">
-            <div>
+            <div v-bind:style="background()">
                 <div v-for="row in items" :key="row.id" class="canvas-row">
                     <div v-for="col in row.cols" :key="col.id" class="canvas-col">
                         <div v-on:click="contentSelect(col.id, row.id)" v-on:mouseover="contentHover(col.id, row.id)" v-bind:class="contentClass(col.id, row.id)">
@@ -54,7 +54,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import Modal from './ModalComponent.vue';
-import data, { Coord, SIGNALS, ENDPOINTS, Pawn } from '../services/websocket';
+import data, { Coord, SIGNALS, ENDPOINTS, Pawn, HTTP_SERVER } from '../services/websocket';
 import { isEditing, addTask } from '../services/store';
 
 interface IRow {
@@ -80,6 +80,7 @@ export default class CanvasComponent extends Vue {
     private selected: Coord = { x: -1, y: -1 };
     private hover: Coord = { x: -1, y: -1 };
     private head: Coord = { x: 0, y: 0 };
+    private backV: number = 0;
 
     private pawns: { [coord: string]: Pawn } = {};
     private pawn: string = '';
@@ -92,6 +93,7 @@ export default class CanvasComponent extends Vue {
 
     constructor() {
         super();
+        data.register(SIGNALS.UPDATED_IMAGE, this.updateBack);
         data.register(SIGNALS.UPDATED_COORDS, this.updateCoords);
         data.register(ENDPOINTS.GET_COORDS, this.updateCoords);
         data.getCoords();
@@ -130,6 +132,10 @@ export default class CanvasComponent extends Vue {
         } else {
             return 'btn btn-secondary';
         }
+    }
+
+    public background() {
+        return `background-image: url(${HTTP_SERVER}?v=${this.backV})`;
     }
 
     private isEditing() {
@@ -221,6 +227,10 @@ export default class CanvasComponent extends Vue {
         }
     }
 
+    private updateBack() {
+        this.backV +=1;
+    }
+
     private add() {
         this.adding = true;
     }
@@ -261,7 +271,6 @@ export default class CanvasComponent extends Vue {
 }
 
 #canvas-grid > div {
-    background-image: url(http://localhost:8090);
     background-size: 100% 100%;
     display: inline-block;
 }

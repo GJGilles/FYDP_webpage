@@ -59,6 +59,7 @@ export const SIGNALS = {
     UPDATED_QUEUE: 'updated_queue',
     UPDATED_QUEUE_STATE: 'updated_queue_state',
     UPDATED_MACROS: 'updated_macros',
+    UPDATED_IMAGE: 'updated_image',
 
     SCANNING_GRID: 'scanning_grid',
     SCANNED_GRID: 'scanned_grid',
@@ -66,8 +67,11 @@ export const SIGNALS = {
     ERROR: 'error', // General error signal, may add more specific errors later
 };
 
+export const WS_SERVER = 'ws://localhost:8080';
+export const HTTP_SERVER = 'http://localhost:8090';
+
 class DataService {
-    private ws: WebSocket = new WebSocket('ws://localhost:8080'); // Server path
+    private ws: WebSocket = new WebSocket(WS_SERVER); // Server path
     private connected: Promise<any> = Promise.resolve();
 
     private callbacks: { [key: string]: Array<(...params: any[]) => void> } = {};
