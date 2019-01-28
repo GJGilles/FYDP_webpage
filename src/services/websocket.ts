@@ -50,6 +50,8 @@ export const ENDPOINTS = {
     UPDATE_MACRO: 'update_macro',
     REMOVE_MACRO: 'remove_macro',
     GET_MACROS: 'get_macros',
+
+    SET_IMAGE: 'set_image',
 };
 
 export const SIGNALS = {
@@ -131,6 +133,10 @@ class DataService {
 
     public getMacros = () => {
         return this.send(ENDPOINTS.GET_MACROS);
+    }
+
+    public setImage = (raw: any) => {
+        return this.send(ENDPOINTS.SET_IMAGE, raw);
     }
 
     public register = (key: string, callback: (...params: any[]) => void) => {

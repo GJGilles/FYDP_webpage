@@ -14,7 +14,8 @@
         <div class="col-2">
             <div id="palette-row" class="row">
                 <button v-on:click="add()" type="button" class="btn btn-dark col-4">Static</button>
-                <div class="d-inline-block col-4"></div>
+                <button type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#upload-modal">Upload</button>
+                <Modal></Modal>
                 <button v-on:click="scan()" type="button" class="btn btn-info col-4">Scan</button>
             </div>
             <div id="position-row" class="row">
@@ -50,6 +51,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import Modal from './ModalComponent.vue';
 import data, { Coord, SIGNALS, ENDPOINTS, Pawn } from '../services/websocket';
 import { isEditing, addTask } from '../services/store';
 
@@ -62,7 +64,11 @@ interface ICol {
     id: number;
 }
 
-@Component({})
+@Component({
+    components: {
+        Modal
+    }
+})
 export default class CanvasComponent extends Vue {
     private ICONS = [['fas', 'anchor'],['fas', 'ankh'],['fas', 'paw'],['fas', 'hiking'],['fas', 'shield-alt'],['fas', 'user-secret'],['fas', 'crosshairs'],['fas', 'hat-wizard'],['fas', 'mask'],['fas', 'fist-raised'],['fas', 'praying-hands'],['fas', 'gavel'],['fas', 'dice'],['fas', 'gem'],['fas', 'user-ninja'],['fas', 'user-shield'],['fas', 'moon'],['fas', 'icicles'],['fas', 'dice-d20'], ['fas', 'dice-d6'], ['fas', 'dragon'], ['fas', 'ring'], ['fas', 'hat-wizard']];
     private NUM_ROWS = 27;
