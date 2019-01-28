@@ -136,7 +136,7 @@ class DataService {
     }
 
     public setImage = (raw: any) => {
-        return this.send(ENDPOINTS.SET_IMAGE, raw);
+        return this.send(ENDPOINTS.SET_IMAGE, raw, false);
     }
 
     public register = (key: string, callback: (...params: any[]) => void) => {
@@ -158,10 +158,14 @@ class DataService {
         }
     }
 
-    private send = (key: string, body?: any) => {
+    private send = (key: string, body?: any, log: boolean = true) => {
         this.connected.then(() => {
             this.ws.send(JSON.stringify({ key, body }));
-            console.info('Message Sent: ', key, body);
+            if (log) {
+                console.info('Message Sent: ', key, body);
+            } else {
+                console.info('Message Sent: ', key);
+            }
         });
     }
 }

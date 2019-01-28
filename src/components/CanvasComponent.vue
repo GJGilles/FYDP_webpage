@@ -1,12 +1,14 @@
 <template>
     <div>
-        <div id="canvas-grid" class="col-10">
-            <div v-for="row in items" :key="row.id" class="canvas-row">
-                <div v-for="col in row.cols" :key="col.id" class="canvas-col">
-                    <!-- TODO: Move so there is only one tooltip outside of the overflow container -->
-                    <div v-on:click="contentSelect(col.id, row.id)" v-on:mouseover="contentHover(col.id, row.id)" v-bind:class="contentClass(col.id, row.id)">
-                        <div v-if="isPawn(col.id, row.id)"  v-bind:style="pawnColor(col.id, row.id)"><font-awesome-icon v-bind:icon="pawnShape(col.id, row.id)"/></div>
-                        <!-- <span class="hovertext">{{ contentText(row.id, col.id) }}</span> -->
+        <div id="canvas-grid" v-on:mouseleave="contentHover(-1, -1)" class="col-10">
+            <div>
+                <div v-for="row in items" :key="row.id" class="canvas-row">
+                    <div v-for="col in row.cols" :key="col.id" class="canvas-col">
+                        <div v-on:click="contentSelect(col.id, row.id)" v-on:mouseover="contentHover(col.id, row.id)" v-bind:class="contentClass(col.id, row.id)">
+                            <div v-if="isPawn(col.id, row.id)" >
+                                <div class="pawn" v-bind:style="pawnColor(col.id, row.id)"><font-awesome-icon v-bind:icon="pawnShape(col.id, row.id)"/></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -258,6 +260,12 @@ export default class CanvasComponent extends Vue {
     max-width: 1440px;
 }
 
+#canvas-grid > div {
+    background-image: url(http://localhost:8090);
+    background-size: 100% 100%;
+    display: inline-block;
+}
+
 #canvas-sidebar {    
     border: 1px solid black;
     overflow-x: hidden;
@@ -298,34 +306,40 @@ export default class CanvasComponent extends Vue {
 }
 
 #canvas-grid .canvas-row {
-    height: 30px;
     white-space: nowrap;
 }
 
 #canvas-grid .canvas-col {
     display: inline-block;
-    height: 100%;
-    width: 30px;
     border: 1px solid black;
 }
 
 #canvas-grid .content {
     display: inline-block;
-    height: 100%;
-    width: 100%;
-    background-color: gray;
-    position: relative;
+    height: 50px;
+    width: 50px;
     vertical-align: top;
-    text-align: center;
 }
 
-#canvas-grid .content div {
+#canvas-grid .content > div {
+    position: relative;
+    height: 100%;
+}
+
+#canvas-grid .content .pawn {
     background: white;
-    display: inline-block;
-    vertical-align: middle;
-    height: 22px;
-    width: 22px;
-    border-radius: 10px;
+    position: absolute;
+    text-align: center;
+    top: 10%;
+    left: 12%;
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+}
+
+.pawn svg {
+    height: 100%;
+    width: 100%;
 }
 
 #canvas-grid .obstacle div {
