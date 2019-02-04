@@ -2,7 +2,10 @@
     <div>
         <ul v-show="!isEdit" class="queue-area">
             <!-- Playing item -->
-            <li class="list-group-item task row">
+            <li id="current-task" class="list-group-item task row">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" v-bind:aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100" v-bind:style="progressStyle"></div>
+                </div>
                 <button v-show="!isPlaying" v-on:click="play()" type="button" class="btn btn-success col-2"><i class="fas fa-play"></i></button>
                 <button v-show="isPlaying" v-on:click="pause()" type="button" class="btn btn-primary col-2"><i class="fas fa-pause"></i></button>
                 <div v-if="isQueue" class="col-6 d-inline-block">{{ getTaskName(playing) }}</div>
@@ -47,11 +50,13 @@ export default class QueueComponent extends Vue {
     private playing: Task = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
     private queue: Task[] = [];
     private isPlaying = true;
+    private progress: number = 0;
 
     private name: string = 'New Macro';
 
     constructor() {
         super();
+        data.register(SIGNALS.UPDATED_TASK, this.updatedProgress);
         data.register(SIGNALS.UPDATED_QUEUE, this.updateQueue);
         data.register(SIGNALS.UPDATED_QUEUE_STATE, this.updateState);
 
@@ -60,6 +65,10 @@ export default class QueueComponent extends Vue {
             this.updateQueue(data.queue);
         });
         data.getQueue();
+    }
+
+    private get progressStyle() {
+        return `width: ${this.progress}%;`;
     }
 
     private get isEdit() {
@@ -130,6 +139,10 @@ export default class QueueComponent extends Vue {
         return `FROM (${task.start.x + 1}, ${task.start.y + 1}) TO (${task.end.x + 1}, ${task.end.y + 1})`;
     }
 
+    private updatedProgress(percentage: number) {
+        this.progress = percentage;
+    }
+
     private updateQueue(queue: Task[]) {
         const playing = queue.shift();
         if (playing) {
@@ -160,6 +173,18 @@ export default class QueueComponent extends Vue {
 .queue-area .task {
     border: 1px solid gray;
     color: white;
+}
+
+#current-task {
+    position: relative;
+}
+
+#current-task .progress {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
 }
 
 </style>

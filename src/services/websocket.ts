@@ -55,6 +55,7 @@ export const ENDPOINTS = {
 };
 
 export const SIGNALS = {
+    UPDATED_TASK: 'updated_task',
     UPDATED_COORDS: 'updated_coords',
     UPDATED_QUEUE: 'updated_queue',
     UPDATED_QUEUE_STATE: 'updated_queue_state',
@@ -82,7 +83,7 @@ class DataService {
         });
         this.ws.onmessage = this.alert;
     }
-
+    
     public addMove = (start: Coord, end: Coord) => {
         return this.send(ENDPOINTS.ADD_MOVE, { start, end });
     }
