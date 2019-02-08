@@ -1,8 +1,9 @@
 <template>
   <div id="app" class="row"> 
-    <Canvas id="canvas" class="col-12"></Canvas>
-    <Queue id="queue" class="col-12 col-lg-6"></Queue>
-    <Macro id="macro" class="col-12 col-lg-6"></Macro>
+    <Canvas id="canvas"  class="col-12 col-lg-10"></Canvas>
+    <Pawn v-if="isMaster" id="pawn" class="col-12 col-lg-2"></Pawn>
+    <Queue v-if="isMaster" id="queue" class="col-12 col-lg-6"></Queue>
+    <Macro v-if="isMaster" id="macro" class="col-12 col-lg-6"></Macro>
   </div>
 </template>
 
@@ -10,20 +11,23 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import Canvas from './components/CanvasComponent.vue';
+import Pawn from './components/PawnComponent.vue';
 import Macro from './components/MacroComponent.vue';
 import Queue from './components/QueueComponent.vue';
 
 @Component({
   components: {
     Canvas,
+    Pawn,
     Macro,
     Queue,
   },
 })
 export default class App extends Vue {
+  private isMaster: boolean = process.env.IS_MASTER === 'true';
+
   constructor() {
     super();
-
   }
 }
 </script>

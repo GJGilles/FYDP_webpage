@@ -41,8 +41,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import data, { Task, SIGNALS, ENDPOINTS } from '../services/websocket';
-import { isEditing, getTasks, reorderTasks, removeTask, save, exit, setName, getName } from '../services/store';
+import data, { SIGNALS, ENDPOINTS } from '../services/websocket';
+import { isEditing, getTasks, reorderTasks, removeTask, save, exit, setName, getName } from '../services/macros';
+import { Task } from '../interfaces';
 
 @Component({})
 export default class QueueComponent extends Vue {

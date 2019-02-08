@@ -17,8 +17,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import data, { SIGNALS, Macro, ENDPOINTS } from '../services/websocket';
-import { edit } from '../services/store';
+import data, { SIGNALS, ENDPOINTS } from '../services/websocket';
+import { edit } from '../services/macros';
+import { Macro } from '../interfaces';
 
 @Component({})
 export default class MacroComponent extends Vue {
