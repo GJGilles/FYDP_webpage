@@ -1,3 +1,3 @@
 $env:IS_MASTER='true'
 
-npm run serve
+npm run serve -- --port 8000

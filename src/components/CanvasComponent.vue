@@ -177,7 +177,6 @@ export default class CanvasComponent extends Vue {
     margin: 0.75rem 0rem;
     height: calc(100% - 0.75rem);
     padding: 0px;
-    max-width: 1440px;
 }
 
 #canvas-grid > div {
