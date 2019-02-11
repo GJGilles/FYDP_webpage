@@ -67,9 +67,9 @@ const actions = {
     }
 };
 
-export default { state, mutations, getters, actions };
+export default { state, mutations, getters, actions, namespaced: true };
 
-const { commit, read, dispatch } = getStoreAccessors<MacroState, RootState>('');
+const { commit, read, dispatch } = getStoreAccessors<MacroState, RootState>('macros');
 
 export const edit = (macro: Macro) => commit(mutations.edit)(store, macro);
 export const reorderTasks = (start: number, stop: number) => commit(mutations.reorderTasks)(store, { start, stop });

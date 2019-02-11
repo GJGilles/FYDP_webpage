@@ -54,9 +54,9 @@ const getters = {
 const actions = {
 };
 
-export default { state, mutations, getters, actions };
+export default { state, mutations, getters, actions, namespaced: true };
 
-const { commit, read, dispatch } = getStoreAccessors<PawnState, RootState>('');
+const { commit, read, dispatch } = getStoreAccessors<PawnState, RootState>('pawns');
 
 export const setPawns = (pawns: Pawn[]) => commit(mutations.setPawns)(store, pawns);
 export const setAdding = (adding: boolean) => commit(mutations.setAdding)(store, adding);

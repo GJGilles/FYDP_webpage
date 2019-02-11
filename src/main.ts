@@ -13,6 +13,7 @@ import Vuex from 'vuex';
 import App from './App.vue';
 import macros from './services/macros';
 import pawns from './services/pawns';
+import settings from './services/settings';
 
 library.add(faUserSecret)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
@@ -20,7 +21,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false;
 
 Vue.use(Vuex);
-export const store = new Vuex.Store({ modules: { macros, pawns } });
+export const store = new Vuex.Store({ modules: { macros, pawns, settings } });
 export default new Vue({
   store,
   render: (h) => h(App),

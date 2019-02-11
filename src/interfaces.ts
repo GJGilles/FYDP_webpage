@@ -43,3 +43,7 @@ export interface PawnState {
     selected: Coord;
     hover: Coord;
 }
+
+export interface SettingsState {
+    name: string;
+}

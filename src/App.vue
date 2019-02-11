@@ -1,8 +1,6 @@
 <template>
   <div id="app"> 
-    <nav class="navbar navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Merlin</a>
-    </nav>
+    <Nav></Nav>
     <div id="body" class="row">
       <Canvas id="canvas"  v-bind:class="canvasClass()"></Canvas>
       <Pawn v-if="isMaster" id="pawn" class="col-12 col-lg-2"></Pawn>
@@ -15,6 +13,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import Nav from './components/NavComponent.vue';
 import Canvas from './components/CanvasComponent.vue';
 import Pawn from './components/PawnComponent.vue';
 import Macro from './components/MacroComponent.vue';
@@ -22,6 +21,7 @@ import Queue from './components/QueueComponent.vue';
 
 @Component({
   components: {
+    Nav,
     Canvas,
     Pawn,
     Macro,
