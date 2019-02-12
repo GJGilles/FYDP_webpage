@@ -46,7 +46,7 @@ export default class MacroComponent extends Vue {
 
     private run(index: number) {
         for (const task of this.macros[index].tasks) {
-            data.addMove(task.start, task.end);
+            data.addTask(task.start, task.end, task.owner);
         }
     }
 

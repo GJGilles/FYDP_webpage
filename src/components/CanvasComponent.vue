@@ -22,6 +22,7 @@ import Component from 'vue-class-component';
 import data, { SIGNALS, ENDPOINTS, HTTP_SERVER } from '../services/websocket';
 import * as macros from '../services/macros';
 import * as pawns from '../services/pawns';
+import * as settings from '../services/settings';
 import { Coord, Pawn } from '../interfaces';
 
 interface IRow {
@@ -125,9 +126,9 @@ export default class CanvasComponent extends Vue {
 
     private addMove(start: Coord, end: Coord) {
         if (macros.isEditing()) {
-            macros.addTask({ start, end });
+            macros.addTask({ start, end, owner: settings.getName() });
         } else {
-            data.addMove(start, end);
+            data.addTask(start, end, settings.getName());
         }
     }
 

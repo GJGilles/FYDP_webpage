@@ -12,6 +12,7 @@ export interface Coord {
 export interface Task {
     start: Coord;
     end: Coord;
+    owner: string;
 }
 
 export interface Macro {

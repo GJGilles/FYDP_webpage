@@ -8,6 +8,7 @@
                 </div>
                 <button v-show="!isPlaying" v-on:click="play()" type="button" class="btn btn-success col-2"><i class="fas fa-play"></i></button>
                 <button v-show="isPlaying" v-on:click="pause()" type="button" class="btn btn-primary col-2"><i class="fas fa-pause"></i></button>
+                <div class="col-2 d-inline-block">{{ playing.owner }}</div>
                 <div v-if="isQueue" class="col-6 d-inline-block">{{ getTaskName(playing) }}</div>
                 <div v-if="!isQueue" class="col-6 d-inline-block">No tasks queued</div>
                 <button v-on:click="remove(-1)" v-show="isQueue" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
@@ -16,6 +17,7 @@
             <li v-for="(row, index) in queue" :key="index" class="row list-group-item task">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
                 <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
+                <div class="col-2 d-inline-block">{{ row.owner }}</div>
                 <div class="col-6 d-inline-block">{{ getTaskName(row) }}</div>
                 <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
             </li>
@@ -25,12 +27,14 @@
             <li class="list-group-item task row">
                 <button v-on:click="save()" type="button" class="btn btn-success col-1"><i class="fas fa-save"></i></button>
                 <button v-on:click="close()" type="button" class="btn btn-danger col-1"><i class="fas fa-times"></i></button>
+                <div class="col-2 d-inline-block">{{ getOwner }}</div>
                 <div class="col-4 d-inline-block"><input v-model="name" type="text" class="form-control"></div>
                 <div class="col-4 d-inline-block float-right">Macro Edit Mode</div>
             </li>
             <li v-for="(row, index) in editQueue" :key="index" class="row list-group-item task">
                 <button :disabled="isFirst(index)" v-on:click="moveUp(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-up"></i></button>
                 <button :disabled="isLast(index)" v-on:click="moveDown(index)" type="button" class="btn btn-info col-1"><i class="fas fa-chevron-down"></i></button>
+                <div class="col-2 d-inline-block">{{ row.owner }}</div>
                 <div class="col-6 d-inline-block">{{ getTaskName(row) }}</div>
                 <button v-on:click="remove(index)" type="button" class="btn btn-danger col-1 float-right"><i class="fas fa-trash"></i></button>
             </li>
@@ -43,12 +47,13 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import data, { SIGNALS, ENDPOINTS } from '../services/websocket';
 import { isEditing, getTasks, reorderTasks, removeTask, save, exit, setName, getName } from '../services/macros';
+import * as settings from '../services/settings';
 import { Task } from '../interfaces';
 
 @Component({})
 export default class QueueComponent extends Vue {
     private isQueue: boolean = false;
-    private playing: Task = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
+    private playing: Task = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, owner: '' };
     private queue: Task[] = [];
     private isPlaying = true;
     private progress: number = 0;
@@ -79,6 +84,10 @@ export default class QueueComponent extends Vue {
 
     private get editQueue() {
         return getTasks();
+    }
+
+    private get getOwner() {
+        return settings.getName();
     }
 
     private play() {

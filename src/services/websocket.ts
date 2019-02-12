@@ -53,8 +53,8 @@ class DataService {
         this.ws.onmessage = this.alert;
     }
     
-    public addMove = (start: Coord, end: Coord) => {
-        return this.send(ENDPOINTS.ADD_MOVE, { start, end });
+    public addTask = (start: Coord, end: Coord, owner: string) => {
+        return this.send(ENDPOINTS.ADD_MOVE, { start, end, owner });
     }
 
     public removeMove = (index: number) => {
