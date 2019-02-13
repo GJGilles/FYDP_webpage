@@ -1,4 +1,4 @@
-import { Message, Coord, Task, Macro } from "../interfaces";
+import { Message, Coord, Task, Macro, Group } from "../interfaces";
 
 export const ENDPOINTS = {
     CONNECT: 'connection',
@@ -89,8 +89,8 @@ class DataService {
         return this.send(ENDPOINTS.ADD_PAWN, position);
     }
 
-    public updatePawn = (id: number, name: string, color: string, shape: string[]) => {
-        return this.send(ENDPOINTS.UPDATE_PAWN, { id, name, color, shape });
+    public updatePawn = (id: string, group: string, name: string, color: string, shape: string[]) => {
+        return this.send(ENDPOINTS.UPDATE_PAWN, { id, group, name, color, shape });
     }
 
     public createMacro = (name: string, tasks: Task[]) => {

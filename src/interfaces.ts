@@ -21,16 +21,24 @@ export interface Macro {
     tasks: Task[];
 }
 
+export interface Group {
+    name: string;
+    pawns: { [id: string]: Pawn };
+}
+
+// The position and meta information related to an object on the board
 export interface Pawn {
+    id: string; // Unchangeable unique identifier 
+    name: string; // User changeable unique identifier
+    group: string;
     position: Coord;
 
     obstacle: boolean;
-    id: number;
 
-    name: string;
     color: string;
     shape: string[];
 }
+
 export interface RootState { }
 
 export interface MacroState {
@@ -39,7 +47,7 @@ export interface MacroState {
 }
 
 export interface PawnState {
-    pawns: { [coord: string]: Pawn };
+    groups: { [name: string]: Group };
     adding: boolean;
     selected: Coord;
     hover: Coord;

@@ -13,10 +13,13 @@
             <div class="col-4">{{ hoverText() }}</div>
         </div>
         <ul id="canvas-sidebar" v-show="!isEditing()" class="list-group">
-            <li v-on:click="pawnSelect(pawn)" v-for="pawn in pawnArray" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="list-group-item row">
-                <div class="d-inline-block col-9">{{ pawn.name }}</div>
-                <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-3"><i class="fas fa-pencil-alt"></i></button>
-            </li>
+            <template v-for="group in pawnArray" class="list-group-item row">
+                <li :key="group.name">{{ group.name }}</li>
+                <li v-on:click="pawnSelect(pawn)" v-for="pawn in group.pawns" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="list-group-item row">
+                    <div class="d-inline-block col-9">{{ pawn.name }}</div>
+                    <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-3"><i class="fas fa-pencil-alt"></i></button>
+                </li>
+            </template>
         </ul>
         <div id="canvas-editor" class="row" v-show="isEditing()">
             <div class="col-12">Pawn Edit Mode</div>
@@ -54,6 +57,7 @@ export default class PawnComponent extends Vue {
 
     private editing: Coord = { x: -1, y: -1 };
     private name: string = '';
+    private group: string = '';
     private color: string = '#000000';
     private icon: string[] = ['', ''];
 
@@ -62,7 +66,7 @@ export default class PawnComponent extends Vue {
     }
 
     private get pawnArray() {
-        return pawns.getPawns();
+        return pawns.getGroups();
     }
 
     private getCoordKey(coord: Coord) {
@@ -131,7 +135,7 @@ export default class PawnComponent extends Vue {
     }
 
     private save() {
-        data.updatePawn(pawns.getPawn(this.editing).id, this.name, this.color, this.icon);
+        data.updatePawn(pawns.getPawn(this.editing).id, this.group, this.name, this.color, this.icon);
     }
 
     private exit() {

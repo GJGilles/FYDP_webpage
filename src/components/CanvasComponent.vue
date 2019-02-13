@@ -23,7 +23,7 @@ import data, { SIGNALS, ENDPOINTS, HTTP_SERVER } from '../services/websocket';
 import * as macros from '../services/macros';
 import * as pawns from '../services/pawns';
 import * as settings from '../services/settings';
-import { Coord, Pawn } from '../interfaces';
+import { Coord, Pawn, Group } from '../interfaces';
 
 interface IRow {
     id: number;
@@ -148,9 +148,9 @@ export default class CanvasComponent extends Vue {
         }
     }
 
-    private updateCoords(params: { head: Coord, pawns: Pawn[] }) {
+    private updateCoords(params: { head: Coord, groups: { [key: string]: Group } }) {
         this.head = params.head;
-        pawns.setPawns(params.pawns);
+        pawns.setPawns(params.groups);
     }
 
     private updateBack() {
