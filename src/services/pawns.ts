@@ -1,7 +1,7 @@
 import { ActionContext } from 'vuex';
 import { getStoreAccessors } from "vuex-typescript";
 import { store } from '../main';
-import { RootState, PawnState, Macro, Task, Pawn, Coord, Group } from '../interfaces';
+import { RootState, PawnState, Macro, Task, Pawn, Coord, Group, DisplayGroup } from '../interfaces';
 import data from './websocket';
 
 const getCoordKey = (coord: Coord) => {
@@ -17,7 +17,19 @@ const state: PawnState = {
 
 const mutations = {
     setPawns: (state: PawnState, groups: { [name: string]: Group }) => {
-        state.groups = groups;
+        const dGroups: { [name: string]: DisplayGroup } = { };
+        for (const key of Object.keys(groups)) {
+            dGroups[key] = {
+                name: groups[key].name,
+                pawns: groups[key].pawns,
+                minimized: false
+            }
+
+            if (state.groups[key]) {
+                dGroups[key].minimized = state.groups[key].minimized;
+            }
+        }
+        state.groups = dGroups;
     },
     // addPawn: (state: PawnState, pawn: Pawn) => {
     //     state.pawns[getCoordKey(pawn.position)] = pawn;

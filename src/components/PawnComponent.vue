@@ -14,10 +14,15 @@
         </div>
         <ul id="canvas-sidebar" v-show="!isEditing()" class="list-group">
             <template v-for="group in pawnArray" class="list-group-item row">
-                <li :key="group.name">{{ group.name }}</li>
-                <li v-on:click="pawnSelect(pawn)" v-for="pawn in group.pawns" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="list-group-item row">
-                    <div class="d-inline-block col-9">{{ pawn.name }}</div>
-                    <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-3"><i class="fas fa-pencil-alt"></i></button>
+                <li :key="group.name" class="list-group-item bg-light text-dark row">
+                    <div class="d-inline-block col-9"><h5>{{ group.name }}</h5></div>
+                    <button v-on:click="minimize(group)" v-show="!isMinimized(group)" type="button" class="btn btn-dark float-right col-3"><i class="fas fa-caret-down"></i></button>
+                    <button v-on:click="maximize(group)" v-show="isMinimized(group)" type="button" class="btn btn-dark float-right col-3"><i class="fas fa-caret-right"></i></button>
+                </li>
+                <li v-on:click="pawnSelect(pawn)" v-show="!isMinimized(group)" v-for="pawn in group.pawns" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="list-group-item row">
+                    <div class="d-inline-block col-1"></div>
+                    <div class="d-inline-block col-7">{{ pawn.name }}</div>
+                    <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-2" style="line-height: 0.5;"><i class="fas fa-pencil-alt fa-sm"></i></button>
                 </li>
             </template>
         </ul>
@@ -28,6 +33,7 @@
                 <button v-on:click="exit()" class="col-4 float-right btn btn-danger"><i class="fas fa-times"></i></button>
             </div>
             <div class="col-12"><input v-model="name" type="text" class="form-control"></div>
+            <div class="col-12"><input v-model="group" type="text" class="form-control"></div>
             <div class="col-12"><input v-model="color" type="color" class="form-control"></div>
             <div id="icon-area" class="col-11">
                 <div v-for="(icon, index) in ICONS" :key="index" class="d-inline-block col-3">
@@ -44,7 +50,7 @@ import Component from 'vue-class-component';
 import Modal from './ModalComponent.vue';
 import data, { SIGNALS, ENDPOINTS, HTTP_SERVER } from '../services/websocket';
 import * as macros from '../services/macros';
-import { Coord, Pawn } from '../interfaces';
+import { Coord, Pawn, Group, DisplayGroup } from '../interfaces';
 import * as pawns from '../services/pawns';
 
 @Component({
@@ -89,6 +95,10 @@ export default class PawnComponent extends Vue {
         }
     }
 
+    private isMinimized(group: DisplayGroup) {
+        return group.minimized;
+    }
+
     private isEditing() {
         return this.editing.x !== -1 && this.editing.y !== -1;
     }
@@ -116,7 +126,11 @@ export default class PawnComponent extends Vue {
     }
 
     private pawnSelect(pawn: Pawn) {
-        pawns.setSelected(pawn.position);
+        if (pawns.isSelected(pawn.position)) {
+            pawns.setSelected({ x: -1, y: -1 });
+        } else {
+            pawns.setSelected(pawn.position);
+        }
     }
 
     private add() {
@@ -127,8 +141,17 @@ export default class PawnComponent extends Vue {
         data.scanGrid();
     }
 
+    private minimize(group: DisplayGroup) {
+        group.minimized = true;
+    }
+
+    private maximize(group: DisplayGroup) {
+        group.minimized = false;
+    }
+
     private edit(pawn: Pawn) {
         this.editing = pawn.position;
+        this.group = pawn.group;
         this.name = pawn.name;
         this.color = pawn.color;
         this.icon = pawn.shape;

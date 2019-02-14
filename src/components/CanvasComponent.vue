@@ -222,8 +222,8 @@ export default class CanvasComponent extends Vue {
     width: 100%;
 }
 
-#canvas-grid .obstacle div {
-    background: black;
+#canvas-grid .obstacle div div {
+    background: black !important;
 }
 
 #canvas-grid .selected {

@@ -26,6 +26,10 @@ export interface Group {
     pawns: { [id: string]: Pawn };
 }
 
+export interface DisplayGroup extends Group {
+    minimized: boolean;
+}
+
 // The position and meta information related to an object on the board
 export interface Pawn {
     id: string; // Unchangeable unique identifier 
@@ -47,7 +51,7 @@ export interface MacroState {
 }
 
 export interface PawnState {
-    groups: { [name: string]: Group };
+    groups: { [name: string]: DisplayGroup };
     adding: boolean;
     selected: Coord;
     hover: Coord;
