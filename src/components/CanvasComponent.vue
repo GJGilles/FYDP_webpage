@@ -84,7 +84,6 @@ export default class CanvasComponent extends Vue {
 
     public contentSelect(x: number, y: number) {
         if (pawns.isAdding() && !this.isPawn(x, y)) {
-            pawns.setAdding(false);
             data.addPawn({ x, y });
         } else if (pawns.getSelected().x === x && pawns.getSelected().y === y) {
             pawns.setSelected({ x: -1, y: -1 });

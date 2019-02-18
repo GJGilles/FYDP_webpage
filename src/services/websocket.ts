@@ -13,6 +13,7 @@ export const ENDPOINTS = {
     GET_COORDS: 'get_coords',
     SCAN_GRID: 'scan_grid',
     ADD_PAWN: 'add_pawn',
+    REMOVE_PAWN: 'remove_pawn',
     UPDATE_PAWN: 'update_pawn',
 
     CREATE_MACRO: 'create_macro',
@@ -87,6 +88,10 @@ class DataService {
 
     public addPawn = (position: Coord) => {
         return this.send(ENDPOINTS.ADD_PAWN, position);
+    }
+
+    public removePawn = (id: string) => {
+        return this.send(ENDPOINTS.REMOVE_PAWN, id);
     }
 
     public updatePawn = (id: string, group: string, name: string, color: string, shape: string[]) => {

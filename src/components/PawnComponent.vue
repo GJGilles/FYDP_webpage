@@ -1,17 +1,22 @@
 <template>
     <div>
-        <div id="palette-row" class="row">
+        <!-- <div id="palette-row" class="row">
             <button v-on:click="add()" type="button" class="btn btn-dark col-4">Static</button>
             <button type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#upload-modal">Upload</button>
             <Modal></Modal>
             <button v-on:click="scan()" type="button" class="btn btn-info col-4">Scan</button>
-        </div>
+        </div> -->
         <div id="position-row" class="row">
             <div class="col-8">Selected Space:</div>
             <div class="col-4">{{ selectedText() }}</div>
             <div class="col-8">Current Space:</div>
             <div class="col-4">{{ hoverText() }}</div>
         </div>
+        <ul class="nav nav-tabs">
+            <li v-for="tab in getTabs" :key="tab" class="nav-item">
+                <a v-on:click="tabSelect(tab)" v-bind:class="tabClass(tab)" href="#">{{ tab }}</a>
+            </li>
+        </ul>
         <ul id="canvas-sidebar" v-show="!isEditing()" class="list-group">
             <template v-for="group in pawnArray" class="list-group-item row">
                 <li :key="group.name" class="list-group-item bg-light text-dark row">
@@ -19,12 +24,17 @@
                     <button v-on:click="minimize(group)" v-show="!isMinimized(group)" type="button" class="btn btn-dark float-right col-3"><i class="fas fa-caret-down"></i></button>
                     <button v-on:click="maximize(group)" v-show="isMinimized(group)" type="button" class="btn btn-dark float-right col-3"><i class="fas fa-caret-right"></i></button>
                 </li>
-                <li v-on:click="pawnSelect(pawn)" v-show="!isMinimized(group)" v-for="pawn in group.pawns" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="list-group-item row">
+                <li v-on:click="pawnSelect(pawn)" v-show="!isMinimized(group) && showPawn(pawn)" v-for="pawn in group.pawns" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="pawn-row list-group-item row">
                     <div class="d-inline-block col-1"></div>
-                    <div class="d-inline-block col-7">{{ pawn.name }}</div>
-                    <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-2" style="line-height: 0.5;"><i class="fas fa-pencil-alt fa-sm"></i></button>
+                    <div class="d-inline-block col-6">{{ pawn.name }}</div>
+                    <button v-on:click="remove(pawn)" type="button" class="btn btn-danger float-right col-2"><i class="fas fa-times fa-sm"></i></button>
+                    <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-2"><i class="fas fa-pencil-alt fa-sm"></i></button>
                 </li>
             </template>
+            <li v-show="showObstacle" class="pawn-row list-group-item row">
+                <button v-show="!isAdding()" v-on:click="setAdding(true)" class="btn btn-success col-2 float-right"><i class="fas fa-plus fa-sm"></i></button>
+                <button v-show="isAdding()" v-on:click="setAdding(false)" class="btn btn-danger col-2 float-right"><i class="fas fa-minus fa-sm"></i></button>
+            </li>
         </ul>
         <div id="canvas-editor" class="row" v-show="isEditing()">
             <div class="col-12">Pawn Edit Mode</div>
@@ -53,6 +63,11 @@ import * as macros from '../services/macros';
 import { Coord, Pawn, Group, DisplayGroup } from '../interfaces';
 import * as pawns from '../services/pawns';
 
+enum PawnTabs {
+    Pawns = 'Pawns',
+    Obstacles = 'Obstacles'
+}
+
 @Component({
     components: {
         Modal
@@ -67,16 +82,34 @@ export default class PawnComponent extends Vue {
     private color: string = '#000000';
     private icon: string[] = ['', ''];
 
+    private tab: PawnTabs = PawnTabs.Pawns;
+
     constructor() {
         super();
+    }
+
+    private get getTabs() {
+        return Object.keys(PawnTabs);
     }
 
     private get pawnArray() {
         return pawns.getGroups();
     }
 
+    private get showObstacle() {
+        return this.tab === PawnTabs.Obstacles;
+    }
+
     private getCoordKey(coord: Coord) {
         return `(${coord.x},${coord.y})`;
+    }
+
+    public tabClass(tab: PawnTabs) {
+        if (tab === this.tab) {
+            return 'active nav-link';
+        } else {
+            return 'nav-link';
+        }
     }
 
     public pawnClass(pawn: Pawn) {
@@ -95,12 +128,20 @@ export default class PawnComponent extends Vue {
         }
     }
 
+    private showPawn(pawn: Pawn) {
+        return (this.tab === PawnTabs.Pawns && !pawn.obstacle) || (this.tab === PawnTabs.Obstacles && pawn.obstacle);
+    }
+
     private isMinimized(group: DisplayGroup) {
         return group.minimized;
     }
 
     private isEditing() {
         return this.editing.x !== -1 && this.editing.y !== -1;
+    }
+
+    private isAdding() {
+        return pawns.isAdding();
     }
 
     public iconSelect(icon: string[]) {
@@ -125,6 +166,10 @@ export default class PawnComponent extends Vue {
         }
     }
 
+    private tabSelect(tab: PawnTabs) {
+        this.tab = tab;
+    }
+
     private pawnSelect(pawn: Pawn) {
         if (pawns.isSelected(pawn.position)) {
             pawns.setSelected({ x: -1, y: -1 });
@@ -133,12 +178,8 @@ export default class PawnComponent extends Vue {
         }
     }
 
-    private add() {
-        pawns.setAdding(true);
-    }
-
-    private scan() {
-        data.scanGrid();
+    private setAdding(adding: boolean) {
+        pawns.setAdding(adding);
     }
 
     private minimize(group: DisplayGroup) {
@@ -155,6 +196,10 @@ export default class PawnComponent extends Vue {
         this.name = pawn.name;
         this.color = pawn.color;
         this.icon = pawn.shape;
+    }
+
+    private remove(pawn: Pawn) {
+        data.removePawn(pawn.id);
     }
 
     private save() {
@@ -178,6 +223,10 @@ export default class PawnComponent extends Vue {
 
 #canvas-sidebar li {
     border: 1px solid grey;
+}
+
+.pawn-row button {
+    line-height: 0.5;
 }
 
 #canvas-editor {
