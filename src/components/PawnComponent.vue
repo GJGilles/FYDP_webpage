@@ -20,9 +20,10 @@
         <ul id="canvas-sidebar" v-show="!isEditing()" class="list-group">
             <template v-for="group in pawnArray" class="list-group-item row">
                 <li :key="group.name" class="list-group-item bg-light text-dark row">
-                    <div class="d-inline-block col-9"><h5>{{ group.name }}</h5></div>
-                    <button v-on:click="minimize(group)" v-show="!isMinimized(group)" type="button" class="btn btn-dark float-right col-3"><i class="fas fa-caret-down"></i></button>
-                    <button v-on:click="maximize(group)" v-show="isMinimized(group)" type="button" class="btn btn-dark float-right col-3"><i class="fas fa-caret-right"></i></button>
+                    <input type="text" class="input-form col-4">
+                    <div class="d-inline-block col-5"><h5>{{ group.name }}</h5></div>
+                    <button v-on:click="minimize(group)" v-show="!isMinimized(group)" type="button" class="btn btn-dark float-right col-2"><i class="fas fa-caret-down"></i></button>
+                    <button v-on:click="maximize(group)" v-show="isMinimized(group)" type="button" class="btn btn-dark float-right col-2"><i class="fas fa-caret-right"></i></button>
                 </li>
                 <li v-on:click="pawnSelect(pawn)" v-show="!isMinimized(group) && showPawn(pawn)" v-for="pawn in group.pawns" :key="pawn.id" v-bind:class="pawnClass(pawn)" class="pawn-row list-group-item row">
                     <div class="d-inline-block col-1"></div>

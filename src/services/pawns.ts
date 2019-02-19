@@ -18,16 +18,21 @@ const state: PawnState = {
 const mutations = {
     setPawns: (state: PawnState, groups: { [name: string]: Group }) => {
         const dGroups: { [name: string]: DisplayGroup } = { };
+        let i = 0;
         for (const key of Object.keys(groups)) {
             dGroups[key] = {
                 name: groups[key].name,
                 pawns: groups[key].pawns,
-                minimized: false
+                minimized: false,
+                order: i,
+                initiative: 0
             }
 
             if (state.groups[key]) {
                 dGroups[key].minimized = state.groups[key].minimized;
             }
+
+            i++;
         }
         state.groups = dGroups;
     },

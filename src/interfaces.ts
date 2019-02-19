@@ -28,6 +28,9 @@ export interface Group {
 
 export interface DisplayGroup extends Group {
     minimized: boolean;
+
+    order: number;
+    initiative: number;
 }
 
 // The position and meta information related to an object on the board
