@@ -2,6 +2,11 @@
     <div>
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Merlin</a>
+            <div id="palette-row" class="row">
+                <button type="button" class="btn btn-primary col-6" data-toggle="modal" data-target="#upload-modal">Upload</button>
+                <Modal></Modal>
+                <button v-on:click="scan()" type="button" class="btn btn-info col-6">Scan</button>
+            </div>
             <div id="login">
                 <span class="col-2">{{ getName }}</span>
                 <button v-on:click="editName()" class="btn btn-primary" type="button" data-toggle="modal" data-target="#name-modal"><i class="fas fa-sign-in-alt"></i></button>
@@ -32,9 +37,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component';
+import Modal from './ModalComponent.vue';
 import * as local from '../services/settings';
 
-@Component({})
+@Component({
+    components: {
+        Modal
+    }
+})
 export default class NavComponent extends Vue {
     private name: string = this.getName;
 

@@ -1,11 +1,5 @@
 <template>
     <div>
-        <!-- <div id="palette-row" class="row">
-            <button v-on:click="add()" type="button" class="btn btn-dark col-4">Static</button>
-            <button type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#upload-modal">Upload</button>
-            <Modal></Modal>
-            <button v-on:click="scan()" type="button" class="btn btn-info col-4">Scan</button>
-        </div> -->
         <div id="position-row" class="row">
             <div class="col-8">Selected Space:</div>
             <div class="col-4">{{ selectedText() }}</div>
@@ -20,7 +14,7 @@
         <ul id="canvas-sidebar" v-show="!isEditing()" class="list-group">
             <template v-for="group in pawnArray" class="list-group-item row">
                 <li :key="group.name" class="list-group-item bg-light text-dark row">
-                    <input type="text" class="input-form col-4">
+                    <input v-show="!showObstacle" v-model="group.initiative" type="number" class="input-form col-4">
                     <div class="d-inline-block col-5"><h5>{{ group.name }}</h5></div>
                     <button v-on:click="minimize(group)" v-show="!isMinimized(group)" type="button" class="btn btn-dark float-right col-2"><i class="fas fa-caret-down"></i></button>
                     <button v-on:click="maximize(group)" v-show="isMinimized(group)" type="button" class="btn btn-dark float-right col-2"><i class="fas fa-caret-right"></i></button>
@@ -58,7 +52,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Modal from './ModalComponent.vue';
 import data, { SIGNALS, ENDPOINTS, HTTP_SERVER } from '../services/websocket';
 import * as macros from '../services/macros';
 import { Coord, Pawn, Group, DisplayGroup } from '../interfaces';
@@ -69,11 +62,7 @@ enum PawnTabs {
     Obstacles = 'Obstacles'
 }
 
-@Component({
-    components: {
-        Modal
-    }
-})
+@Component({})
 export default class PawnComponent extends Vue {
     private ICONS = [['fas', 'anchor'],['fas', 'ankh'],['fas', 'paw'],['fas', 'hiking'],['fas', 'shield-alt'],['fas', 'user-secret'],['fas', 'crosshairs'],['fas', 'hat-wizard'],['fas', 'mask'],['fas', 'fist-raised'],['fas', 'praying-hands'],['fas', 'gavel'],['fas', 'dice'],['fas', 'gem'],['fas', 'user-ninja'],['fas', 'user-shield'],['fas', 'moon'],['fas', 'icicles'],['fas', 'dice-d20'], ['fas', 'dice-d6'], ['fas', 'dragon'], ['fas', 'ring'], ['fas', 'hat-wizard']];
 
@@ -235,10 +224,6 @@ export default class PawnComponent extends Vue {
     overflow-x: hidden;
     height: calc(100% - 120px);
     color: white;
-}
-
-#palette-row {
-    padding: 0.75rem 1.25rem;
 }
 
 #position-row {
