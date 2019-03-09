@@ -48,6 +48,7 @@ export default class CanvasComponent extends Vue {
         data.register(SIGNALS.UPDATED_IMAGE, this.updateBack);
         data.register(SIGNALS.UPDATED_COORDS, this.updateCoords);
         data.register(ENDPOINTS.GET_COORDS, this.updateCoords);
+        data.register(SIGNALS.CALIBRATED, this.calibrated);
         data.getCoords();
     }
 
@@ -162,6 +163,10 @@ export default class CanvasComponent extends Vue {
 
     private scan() {
         data.scanGrid();
+    }
+
+    private calibrated() {
+        this.head = { x: 0, y: 0 };
     }
 
 }

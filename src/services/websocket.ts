@@ -10,6 +10,7 @@ export const ENDPOINTS = {
     REORDER_QUEUE: 'reorder_queue',
     GET_QUEUE: 'get_queue',
 
+    CALIBRATE: 'calibrate',
     GET_COORDS: 'get_coords',
     SCAN_GRID: 'scan_grid',
     ADD_PAWN: 'add_pawn',
@@ -34,6 +35,9 @@ export const SIGNALS = {
 
     SCANNING_GRID: 'scanning_grid',
     SCANNED_GRID: 'scanned_grid',
+    
+    CALIBRATING: 'calibrating',
+    CALIBRATED: 'calibrated',
 
     ERROR: 'error', // General error signal, may add more specific errors later
 };
@@ -76,6 +80,10 @@ class DataService {
 
     public getQueue = () => {
         return this.send(ENDPOINTS.GET_QUEUE);
+    }
+
+    public calibrate = () => {
+        return this.send(ENDPOINTS.CALIBRATE);
     }
 
     public getCoords = () => {

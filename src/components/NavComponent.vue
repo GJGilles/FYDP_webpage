@@ -2,10 +2,11 @@
     <div>
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Merlin</a>
-            <div id="palette-row" class="row">
-                <button type="button" class="btn btn-primary col-6" data-toggle="modal" data-target="#upload-modal">Upload</button>
+            <div id="palette-row">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#upload-modal">Upload</button>
                 <Modal></Modal>
-                <button v-on:click="scan()" type="button" class="btn btn-info col-6">Scan</button>
+                <button v-on:click="scan()" type="button" class="btn btn-info">Scan</button>
+                <button v-on:click="calibrate()" type="button" class="btn btn-primary">Calibrate</button>
             </div>
             <div id="login">
                 <span class="col-2">{{ getName }}</span>
@@ -39,6 +40,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component';
 import Modal from './ModalComponent.vue';
 import * as local from '../services/settings';
+import data from '../services/websocket';
 
 @Component({
     components: {
@@ -51,6 +53,10 @@ export default class NavComponent extends Vue {
     constructor() {
         super();
         local.load();
+    }
+
+    public calibrate() {
+        data.calibrate();
     }
 
     public editName() {

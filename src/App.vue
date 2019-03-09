@@ -18,6 +18,7 @@ import Canvas from './components/CanvasComponent.vue';
 import Pawn from './components/PawnComponent.vue';
 import Macro from './components/MacroComponent.vue';
 import Queue from './components/QueueComponent.vue';
+import data,{ SIGNALS } from './services/websocket';
 
 @Component({
   components: {
@@ -33,11 +34,23 @@ export default class App extends Vue {
 
   constructor() {
     super();
+
+    data.register(SIGNALS.CALIBRATING, this.calibrating);
+    data.register(SIGNALS.CALIBRATED, this.calibrated);
   }
 
   private canvasClass() {
     return this.isMaster ? 'col-12 col-lg-10' : 'col-12 full-height';
   }
+
+  private calibrating() {
+    this.$toasted.info('Calibrating...');
+  }
+
+  private calibrated() {
+    this.$toasted.success('Calibrated!');
+  }
+
 }
 </script>
 
