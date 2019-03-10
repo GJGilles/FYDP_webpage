@@ -94,8 +94,8 @@ class DataService {
         return this.send(ENDPOINTS.SCAN_GRID);
     }
 
-    public addPawn = (position: Coord) => {
-        return this.send(ENDPOINTS.ADD_PAWN, position);
+    public addPawn = (position: Coord, obstacle: boolean) => {
+        return this.send(ENDPOINTS.ADD_PAWN, { position, obstacle });
     }
 
     public removePawn = (id: string) => {

@@ -46,6 +46,11 @@ export interface Pawn {
     shape: string[];
 }
 
+export enum PawnTabs {
+    Pawns = 'Pawns',
+    Obstacles = 'Obstacles'
+}
+
 export interface RootState { }
 
 export interface MacroState {
@@ -55,6 +60,7 @@ export interface MacroState {
 
 export interface PawnState {
     groups: { [name: string]: DisplayGroup };
+    tab: PawnTabs;
     adding: boolean;
     selected: Coord;
     hover: Coord;

@@ -1,7 +1,7 @@
 import { ActionContext } from 'vuex';
 import { getStoreAccessors } from "vuex-typescript";
 import { store } from '../main';
-import { RootState, PawnState, Macro, Task, Pawn, Coord, Group, DisplayGroup } from '../interfaces';
+import { RootState, PawnState, Macro, Task, Pawn, Coord, Group, DisplayGroup, PawnTabs } from '../interfaces';
 import data from './websocket';
 
 const getCoordKey = (coord: Coord) => {
@@ -10,6 +10,7 @@ const getCoordKey = (coord: Coord) => {
 
 const state: PawnState = {
     groups: {},
+    tab: PawnTabs.Pawns,
     adding: false,
     selected: { x: -1, y: -1 },
     hover: { x: -1, y: -1 }
@@ -47,6 +48,9 @@ const mutations = {
     },
     setHover: (state: PawnState, hover: Coord) => {
         state.hover = hover;
+    },
+    setTab: (state: PawnState, tab: PawnTabs) => {
+        state.tab = tab;
     }
 }
 
@@ -72,6 +76,9 @@ const getters = {
     },
     getHover: (state: PawnState) => {
         return state.hover;
+    },
+    getTab: (state: PawnState) => {
+        return state.tab;
     }
 };
 
@@ -86,12 +93,14 @@ export const setPawns = (groups: { [name: string]: Group }) => commit(mutations.
 export const setAdding = (adding: boolean) => commit(mutations.setAdding)(store, adding);
 export const setSelected = (selected: Coord) => commit(mutations.setSelected)(store, selected);
 export const setHover = (hover: Coord) => commit(mutations.setHover)(store, hover);
+export const setTab = (tab: PawnTabs) => commit(mutations.setTab)(store, tab);
 
 export const getGroups = () => read(getters.getGroups)(store);
 export const getPawns = () => read(getters.getPawns)(store);
 export const isAdding = () => read(getters.isAdding)(store);
 export const getSelected = () => read(getters.getSelected)(store);
 export const getHover = () => read(getters.getHover)(store);
+export const getTab = () =>  read(getters.getTab)(store);
 
 export const isSelected = (coord: Coord) => getSelected().x === coord.x && getSelected().y === coord.y;
 export const isHover = (coord: Coord) => getHover().x === coord.x && getHover().y === coord.y;

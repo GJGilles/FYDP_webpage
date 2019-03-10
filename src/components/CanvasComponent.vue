@@ -23,7 +23,7 @@ import data, { SIGNALS, ENDPOINTS, HTTP_SERVER } from '../services/websocket';
 import * as macros from '../services/macros';
 import * as pawns from '../services/pawns';
 import * as settings from '../services/settings';
-import { Coord, Pawn, Group } from '../interfaces';
+import { Coord, Pawn, Group, PawnTabs } from '../interfaces';
 
 interface IRow {
     id: number;
@@ -85,7 +85,7 @@ export default class CanvasComponent extends Vue {
 
     public contentSelect(x: number, y: number) {
         if (pawns.isAdding() && !this.isPawn(x, y)) {
-            data.addPawn({ x, y });
+            data.addPawn({ x, y }, pawns.getTab() === PawnTabs.Obstacles);
         } else if (pawns.getSelected().x === x && pawns.getSelected().y === y) {
             pawns.setSelected({ x: -1, y: -1 });
         } else if (!pawns.isSelected({ x: -1, y: -1 })) {

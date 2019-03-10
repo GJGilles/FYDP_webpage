@@ -26,7 +26,7 @@
                     <button v-on:click="edit(pawn)" type="button" class="btn btn-warning float-right col-2"><i class="fas fa-pencil-alt fa-sm"></i></button>
                 </li>
             </template>
-            <li v-show="showObstacle" class="pawn-row list-group-item row">
+            <li class="pawn-row list-group-item row">
                 <button v-show="!isAdding()" v-on:click="setAdding(true)" class="btn btn-success col-2 float-right"><i class="fas fa-plus fa-sm"></i></button>
                 <button v-show="isAdding()" v-on:click="setAdding(false)" class="btn btn-danger col-2 float-right"><i class="fas fa-minus fa-sm"></i></button>
             </li>
@@ -54,13 +54,8 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import data, { SIGNALS, ENDPOINTS, HTTP_SERVER } from '../services/websocket';
 import * as macros from '../services/macros';
-import { Coord, Pawn, Group, DisplayGroup } from '../interfaces';
+import { Coord, Pawn, Group, DisplayGroup, PawnTabs } from '../interfaces';
 import * as pawns from '../services/pawns';
-
-enum PawnTabs {
-    Pawns = 'Pawns',
-    Obstacles = 'Obstacles'
-}
 
 @Component({})
 export default class PawnComponent extends Vue {
@@ -71,8 +66,6 @@ export default class PawnComponent extends Vue {
     private group: string = '';
     private color: string = '#000000';
     private icon: string[] = ['', ''];
-
-    private tab: PawnTabs = PawnTabs.Pawns;
 
     constructor() {
         super();
@@ -87,7 +80,7 @@ export default class PawnComponent extends Vue {
     }
 
     private get showObstacle() {
-        return this.tab === PawnTabs.Obstacles;
+        return pawns.getTab() === PawnTabs.Obstacles;
     }
 
     private getCoordKey(coord: Coord) {
@@ -95,7 +88,7 @@ export default class PawnComponent extends Vue {
     }
 
     public tabClass(tab: PawnTabs) {
-        if (tab === this.tab) {
+        if (tab === pawns.getTab()) {
             return 'active nav-link';
         } else {
             return 'nav-link';
@@ -119,7 +112,7 @@ export default class PawnComponent extends Vue {
     }
 
     private showPawn(pawn: Pawn) {
-        return (this.tab === PawnTabs.Pawns && !pawn.obstacle) || (this.tab === PawnTabs.Obstacles && pawn.obstacle);
+        return (pawns.getTab() === PawnTabs.Pawns && !pawn.obstacle) || (pawns.getTab() === PawnTabs.Obstacles && pawn.obstacle);
     }
 
     private isMinimized(group: DisplayGroup) {
@@ -157,7 +150,7 @@ export default class PawnComponent extends Vue {
     }
 
     private tabSelect(tab: PawnTabs) {
-        this.tab = tab;
+        pawns.setTab(tab);
     }
 
     private pawnSelect(pawn: Pawn) {
