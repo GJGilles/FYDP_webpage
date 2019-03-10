@@ -38,6 +38,9 @@ export const SIGNALS = {
     
     CALIBRATING: 'calibrating',
     CALIBRATED: 'calibrated',
+    
+    SCANNING: 'scanning',
+    SCANNED: 'scanned',
 
     ERROR: 'error', // General error signal, may add more specific errors later
 };

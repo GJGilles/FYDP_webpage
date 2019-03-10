@@ -37,6 +37,8 @@ export default class App extends Vue {
 
     data.register(SIGNALS.CALIBRATING, this.calibrating);
     data.register(SIGNALS.CALIBRATED, this.calibrated);
+    data.register(SIGNALS.SCANNING, this.scanning);
+    data.register(SIGNALS.SCANNED, this.scanned);
   }
 
   private canvasClass() {
@@ -49,6 +51,14 @@ export default class App extends Vue {
 
   private calibrated() {
     this.$toasted.success('Calibrated!');
+  }
+
+  private scanning() {
+    this.$toasted.info('Scanning...');
+  }
+
+  private scanned() {
+    this.$toasted.success('Scanned!');
   }
 
 }

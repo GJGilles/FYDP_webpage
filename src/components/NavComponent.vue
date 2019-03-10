@@ -55,6 +55,10 @@ export default class NavComponent extends Vue {
         local.load();
     }
 
+    public scan() {
+        data.scanGrid();
+    }
+
     public calibrate() {
         data.calibrate();
     }
