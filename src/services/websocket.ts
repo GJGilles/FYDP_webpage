@@ -45,7 +45,7 @@ export const SIGNALS = {
     ERROR: 'error', // General error signal, may add more specific errors later
 };
 
-export const WS_SERVER = 'ws://localhost:8080';
+export const WS_SERVER = 'ws://localhost:8085';
 export const HTTP_SERVER = 'http://localhost:8090';
 
 class DataService {
